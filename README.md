@@ -20,7 +20,8 @@ pip install -r requirements.txt
 
 # Usage
 A simple usage to export the entire year to a csv.
-*Note:* The quotes are needed if you are putting spaces inbetween
+
+**Note:** The quotes are needed if you are putting spaces inbetween
 ``` sh
 ./nott-your-timetable
 ```
