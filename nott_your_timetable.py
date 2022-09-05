@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import requests
+import sys
 from utils import (ScheduleParser, table_to_dict, csv_export, handle_ranges)
 import argparse
 
@@ -9,15 +10,15 @@ def main_cli(args: argparse.Namespace):
         days = handle_ranges(args.days)
         weeks = handle_ranges(args.weeks)
     except ValueError:
-        print("Invalid Range, Please Check Inserted Value")
+        print("Invalid Range, Please Check Inserted Value", file=sys.stderr)
         return 1
     output = args.output
 
     if days[0] < 1 or days[-1] > 7:
-        print("Invalid Range, Please Check Inserted Value")
+        print("Invalid Range, Please Check Inserted Value", file=sys.stderr)
         return 1
     elif weeks[0] < 1 or weeks[-1] > 52:
-        print("Invalid Range, Please Check Inserted Value")
+        print("Invalid Range, Please Check Inserted Value", file=sys.stderr)
         return 1
 
     program = "UG/M1024/M6UEEENG/F/02"
