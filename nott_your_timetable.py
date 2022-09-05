@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 import requests
-from utils import (ScheduleParser, table_to_dict, csv_export)
+from utils import (ScheduleParser, table_to_dict, csv_export, handle_ranges)
 import argparse
-from cli import handle_ranges
 
 
 def main_cli(args: argparse.Namespace):
