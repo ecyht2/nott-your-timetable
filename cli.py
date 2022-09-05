@@ -20,7 +20,7 @@ def parse_arguments():
     parser.add_argument('-o', '--output', type=str, default="output.csv",
                         help="Sets the output file name.")
     parser.add_argument('-t', '--type', type=str, default="csv",
-                        help="Sets the output format.")
+                        help="Sets the output format. (Not Yet Available)")
 
     # Course Selection
     course_group = parser.add_mutually_exclusive_group(required=True)
