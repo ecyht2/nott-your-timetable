@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 import requests
 import sys
-from utils import (ScheduleParser, table_to_dict, csv_export, handle_ranges)
+from utils import (ScheduleParser, table_to_dict, csv_export, handle_ranges,
+                   get_program_value)
+from cli import get_school_interactive
 import argparse
 
 
@@ -21,10 +23,20 @@ def main_cli(args: argparse.Namespace):
         print("Invalid Range, Please Check Inserted Value", file=sys.stderr)
         return 1
 
-    program = "UG/M1024/M6UEEENG/F/02"
+    if args.interactive:
+        school, program = get_school_interactive()
+    else:
+        school, program = args.course
+
+    program_value = None
+    try:
+        program_value = get_program_value(school, program)
+    except ValueError:
+        print("Invalid School or Program", file=sys.stderr)
+        return 1
 
     link = f"http://timetablingunmc.nottingham.ac.uk:8016/reporting/\
-TextSpreadsheet;programme+of+study;id;{program}%0D%0A?\
+TextSpreadsheet;programme+of+study;id;{program_value}%0D%0A?\
 days=1-7&weeks=1-52&periods=3-20&template=SWSCUST+programme+of+study+TextSpreadsheet&\
 height=100&week=100"
 

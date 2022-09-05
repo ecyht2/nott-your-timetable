@@ -6,8 +6,10 @@ from calendar import Calendar
 import datetime
 import csv
 from string import whitespace
+import json
 
 
+# Other Utils
 def handle_ranges(value: str) -> list[int]:
     """Converts integers splitted by ',' into a list.
     A range of value can be added by using '-'.
@@ -54,7 +56,29 @@ def handle_ranges(value: str) -> list[int]:
     return output
 
 
-# Other Utils
+def get_data() -> tuple[dict, dict]:
+    with open("data/dept.json", "r") as f:
+        dept_data: dict = json.load(f)
+    with open("data/program.json", "r") as f:
+        program_data: dict = json.load(f)
+
+    return (dept_data, program_data)
+
+
+def get_program_value(school: str, program: str) -> str:
+    dept_data, program_data = get_data()
+
+    school_value = dept_data.get(school)
+    if school_value is None:
+        raise ValueError("Invalid School Name")
+
+    program_value = program_data[school_value].get(program)
+    if program_value is None:
+        raise ValueError("Invalid Program")
+
+    return program_value
+
+
 def find_first_day(day: int | str, year: int, month: int,
                    ISO: bool = False) -> int:
     """Finds the first day of week of a given month and year.

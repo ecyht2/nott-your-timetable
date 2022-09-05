@@ -45,10 +45,11 @@ For more information use the help flag:
 
 # TODO
   * [ ] Support for exporting to other formats
-  * [ ] Support for other course programs
+  * [x] Support for other course programs
   * [ ] Add more convinience option e.g. Schedule for Spring Semester
   * [ ] A graphical frontend
   * [ ] Add GUI and TUI for displaying timetable
   * [ ] Make use of [Calender Object](https://docs.python.org/3/library/calendar.html)
   * [ ] Add Export Options
-  * [ ] Add better help descriptions
+  * [x] Add better help descriptions
+  * [ ] Support for mutiple program selection
