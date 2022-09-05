@@ -25,10 +25,10 @@ def parse_arguments():
     course_group = parser.add_mutually_exclusive_group(required=True)
     course_group.add_argument("-c", "--course", type=str, nargs=2,
                               help="Specify which School/Division and"
-                              " Programme to export",
-                              metavar=("School/Division", "Programme"))
+                              " Program to export",
+                              metavar=("School/Division", "Program"))
     course_group.add_argument("-i", "--interactive", action="store_true",
                               help="Specify which School/Division and"
-                              " Programme to export using standard input")
+                              " Program to export using standard input")
 
     return parser.parse_args()
