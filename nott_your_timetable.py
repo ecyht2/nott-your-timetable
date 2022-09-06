@@ -2,14 +2,14 @@
 import requests
 import sys
 from utils import (ScheduleParser, table_to_dict, csv_export, handle_ranges,
-                   get_program_value)
+                   handle_ranges_days, get_program_value)
 from cli import get_school_interactive
 import argparse
 
 
 def main_cli(args: argparse.Namespace):
     try:
-        days = handle_ranges(args.days)
+        days = handle_ranges_days(args.days)
         weeks = handle_ranges(args.weeks)
     except ValueError:
         print("Invalid Range, Please Check Inserted Value", file=sys.stderr)
