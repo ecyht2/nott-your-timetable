@@ -184,6 +184,12 @@ def find_week1() -> datetime.date:
     return week1
 
 
+def find_current_week_nott() -> int:
+    """Finds the week number."""
+    diff = datetime.date.today() - find_week1()
+    return int(diff.days / 7) + 1
+
+
 # Utils for parsing data
 class DayOfWeek(Enum):
     Monday = 0

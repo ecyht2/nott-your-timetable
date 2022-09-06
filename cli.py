@@ -1,26 +1,75 @@
 #!/usr/bin/env python3
 import argparse
-from utils import get_data
+from utils import get_data, find_current_week_nott
+import datetime
 
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Exports Timetable for\
     University of Nottingham Malaysia Student.')
+    today = datetime.datetime.today()
 
     # Range Options
-    parser.add_argument('-w', '--weeks', type=str, default="1-52",
-                        help="Sets the range of weeks to export. You can set"
-                        "multiple weeks to export by seperating them by ','"
-                        " or '-' to export all weeks in between.")
-    parser.add_argument('-d', '--days', type=str, default="1-7",
-                        help="Sets the range of days to export. You can set"
-                        "multiple days to export by seperating them by ','"
-                        " or '-' to export all days in between.")
+    # Range Options for weeks
+    week_range_group = parser.add_argument_group(title="Week Range Options")
+    range_week = week_range_group.add_mutually_exclusive_group(required=True)
+    range_week.add_argument('-w', '--weeks', type=str, default="1-52",
+                            help="""Sets the range of weeks to export.
+                            You can set multiple weeks to export by
+                            seperating them by ','  or '-' to export
+                            all weeks in between.""")
+    range_week.add_argument("-ay", "--all-year", action="store_const",
+                            help="""Exports Timetable for the
+                            entire year (Week 1-52).""",
+                            const="1-52", dest="weeks")
+    range_week.add_argument("-au", "--autumn", action="store_const",
+                            help="""Exports Timetable for the
+                            entire autumn semester (Week 4-15).""",
+                            const="4-15", dest="weeks")
+    range_week.add_argument("-sp", "--spring", action="store_const",
+                            help="""Exports Timetable for the
+                            entire spring semester (Week 22-33).""",
+                            const="22-33", dest="weeks")
+    range_week.add_argument("-su", "--summer", action="store_const",
+                            help="""Exports Timetable for the
+                            entire summer semester (Week 38-49).""",
+                            const="38-49", dest="weeks")
+    range_week.add_argument("-fy", "--full-year", action="store_const",
+                            help="""Exports Timetable for the
+                            full year semester (Week 4-15, 22-33).""",
+                            const="4-15,22-33", dest="weeks")
+    range_week.add_argument("-tw", "--this-week", action="store_const",
+                            help="""Exports Timetable for this week.""",
+                            const=str(find_current_week_nott()), dest="weeks")
+
+    # Range Options for days
+    day_range_group = parser.add_argument_group(title="Day Range Options")
+    range_day = day_range_group.add_mutually_exclusive_group(required=True)
+    range_day.add_argument('-d', '--days', type=str, default="1-7",
+                           help="""Sets the range of days to export. You can
+                           set multiple days to export by seperating them by
+                           ','  or '-' to export all days in between.
+                           1 is Monday and up to 7 is Sunday.""")
+    range_day.add_argument("-wd", "--weekdays", action="store_const",
+                           help="Exports Timetable for the weekdays.",
+                           const="1-5", dest="days")
+    range_day.add_argument("-aw", "--all-week", action="store_const",
+                           help="""Exports Timetable for the whole week
+                           (Mon-Sun).""", const="1-7", dest="days")
+    range_day.add_argument("-we", "--weekends", action="store_const",
+                           help="Exports Timetable for the weekends.",
+                           const="6-7", dest="days")
+    range_day.add_argument("-td", "--today", action="store_const",
+                           help="""Exports Timetable for today.""",
+                           const=str(today.isoweekday()), dest="days")
+
     # Output Options
-    parser.add_argument('-o', '--output', type=str, default="output.csv",
-                        help="Sets the output file name.")
-    parser.add_argument('-t', '--type', type=str, default="csv",
-                        help="Sets the output format. (Not Yet Available)")
+    output_group = parser.add_argument_group(title="Output Options")
+    output_group.add_argument('-o', '--output', type=str, default="output.csv",
+                              help="Sets the output file name.")
+    output_group.add_argument('-t', '--type', type=str, default="csv",
+                              help="Sets the output format.\
+                              (Not Yet Available)")
 
     # Course Selection
     course_group = parser.add_mutually_exclusive_group(required=True)
