@@ -110,6 +110,14 @@ def handle_ranges_days(value: str) -> list[int]:
 
 
 def get_data() -> tuple[dict, dict]:
+    """Gets Department and program data from json files.
+
+    Returns
+    -------
+    tuple[dict, dict]
+        The data where the first one is the department data
+        and the second one is the program data.
+    """
     with open("data/dept.json", "r") as f:
         dept_data: dict = json.load(f)
     with open("data/program.json", "r") as f:
@@ -119,6 +127,20 @@ def get_data() -> tuple[dict, dict]:
 
 
 def get_program_value(school: str, program: str) -> str:
+    """Gets the value of the program.
+
+    Parameters
+    ----------
+    school: str
+        The school of the program.
+    program: str
+        The program to find the value of.
+
+    Returns
+    -------
+    str
+        The value of the program
+    """
     dept_data, program_data = get_data()
 
     school_value = dept_data.get(school)
@@ -172,7 +194,13 @@ def find_first_day(day: int | str, year: int, month: int,
 
 
 def find_week1() -> datetime.date:
-    """Finds week 1 of the academic year."""
+    """Finds week 1 of the academic year.
+
+    Returns
+    -------
+    datetime.date
+        The date of the first week of september.
+    """
     today: datetime.date = datetime.date.today()
     if today.month < 9:
         year: int = today.year - 1
@@ -186,7 +214,13 @@ def find_week1() -> datetime.date:
 
 
 def find_current_week_nott() -> int:
-    """Finds the week number."""
+    """Finds the week number.
+
+    Returns
+    -------
+    int
+        The current week number.
+    """
     diff = datetime.date.today() - find_week1()
     return int(diff.days / 7) + 1
 
@@ -381,10 +415,10 @@ def csv_export(data: dict, weeks: list,
                 if week not in weeks:
                     continue
                 date = date_with_day + datetime.timedelta(weeks=week-1)
-                csv_data.append([date, start, end, module])
+                csv_data.append([date, start, end, module, day_data['Room'][i]])
 
     csv_data.sort()
-    csv_data.insert(0, ["Date", "Start", "End", "Module"])
+    csv_data.insert(0, ["Date", "Start", "End", "Module", "Room"])
 
     with open(output, "w", newline="") as csvfile:
         writer = csv.writer(csvfile)
