@@ -112,6 +112,7 @@ def get_school_interactive() -> tuple[str, list[str]]:
         elif program == "":
             pass
         elif program not in program_data[school_value]:
+            program = None
             print("Invalid Program.")
 
     return (school, program)
