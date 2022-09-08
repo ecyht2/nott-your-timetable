@@ -12,7 +12,7 @@ def parse_arguments():
     # Range Options
     # Range Options for weeks
     week_range_group = parser.add_argument_group(title="Week Range Options")
-    range_week = week_range_group.add_mutually_exclusive_group(required=True)
+    range_week = week_range_group.add_mutually_exclusive_group()
     range_week.add_argument('-w', '--weeks', type=str, default="1-52",
                             help="""Sets the range of weeks to export.
                             You can set multiple weeks to export by
@@ -44,7 +44,7 @@ def parse_arguments():
 
     # Range Options for days
     day_range_group = parser.add_argument_group(title="Day Range Options")
-    range_day = day_range_group.add_mutually_exclusive_group(required=True)
+    range_day = day_range_group.add_mutually_exclusive_group()
     range_day.add_argument('-d', '--days', type=str, default="1-7",
                            help="""Sets the range of days to export. You can
                            set multiple days to export by seperating them by
