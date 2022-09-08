@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from xml.etree import ElementTree as ET
 from html.parser import HTMLParser
+import html
 from enum import Enum
 from calendar import Calendar
 import datetime
@@ -257,6 +258,7 @@ class ScheduleParser(HTMLParser):
                 self.current_day = data
         else:
             if data.strip() != "" and self.table_found:
+                data = html.escape(data)
                 self.tables[self.current_day] += data
 
     def handle_starttag(self, tag, attr):
