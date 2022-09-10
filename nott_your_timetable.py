@@ -2,12 +2,16 @@
 import requests
 import sys
 from utils import (ScheduleParser, table_to_dict, csv_export, handle_ranges,
-                   handle_ranges_days, get_program_value)
+                   handle_ranges_days, get_program_value,
+                   find_current_week_nott)
 from cli import get_school_interactive
 import argparse
+import datetime
 
 
 def main_cli(args: argparse.Namespace):
+    today = datetime.date.today()
+
     try:
         days = handle_ranges_days(args.days)
         weeks = handle_ranges(args.weeks)
@@ -15,6 +19,10 @@ def main_cli(args: argparse.Namespace):
         print("Invalid Range, Please Check Inserted Value", file=sys.stderr)
         return 1
     output = args.output
+
+    if args.today:
+        days = [today.isoweekday()]
+        weeks = [find_current_week_nott()]
 
     if days[0] < 1 or days[-1] > 7:
         print("Invalid Range, Please Check Inserted Value", file=sys.stderr)

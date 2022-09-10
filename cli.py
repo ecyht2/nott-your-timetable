@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 import argparse
 from utils import get_data, find_current_week_nott
-import datetime
 
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Exports Timetable for\
     University of Nottingham Malaysia Student.')
-    today = datetime.datetime.today()
 
     # Range Options
     # Range Options for weeks
@@ -59,9 +57,8 @@ def parse_arguments():
     range_day.add_argument("-we", "--weekends", action="store_const",
                            help="Exports Timetable for the weekends.",
                            const="6-7", dest="days")
-    range_day.add_argument("-td", "--today", action="store_const",
-                           help="""Exports Timetable for today.""",
-                           const=str(today.isoweekday()), dest="days")
+    range_day.add_argument("-td", "--today", action="store_true",
+                           help="""Exports Timetable for today.""")
 
     # Output Options
     output_group = parser.add_argument_group(title="Output Options")
