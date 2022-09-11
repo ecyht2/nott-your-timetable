@@ -1,7 +1,0 @@
-#!/usr/bin/env python3
-from nott_your_timetable import main_cli
-from cli import parse_arguments
-
-if __name__ == '__main__':
-    args = parse_arguments()
-    main_cli(args)

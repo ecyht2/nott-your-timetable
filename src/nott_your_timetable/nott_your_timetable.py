@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 import requests
 import sys
-from utils import (ScheduleParser, table_to_dict, csv_export, handle_ranges,
-                   handle_ranges_days, get_program_value,
-                   find_current_week_nott)
-from cli import get_school_interactive
-import argparse
+from .utils import (ScheduleParser, table_to_dict, csv_export, handle_ranges,
+                    handle_ranges_days, get_program_value,
+                    find_current_week_nott)
+from .cli import get_school_interactive, parse_arguments
 import datetime
 
 
-def main_cli(args: argparse.Namespace):
+def main_cli():
+    args = parse_arguments()
     today = datetime.date.today()
 
     try:

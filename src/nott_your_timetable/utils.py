@@ -8,6 +8,7 @@ import datetime
 import csv
 from string import whitespace
 import json
+from importlib.resources import files
 
 
 # Other Utils
@@ -118,9 +119,10 @@ def get_data() -> tuple[dict, dict]:
         The data where the first one is the department data
         and the second one is the program data.
     """
-    with open("data/dept.json", "r") as f:
+    data_path = files('nott_your_timetable.data')
+    with open(data_path.joinpath("dept.json"), "r") as f:
         dept_data: dict = json.load(f)
-    with open("data/program.json", "r") as f:
+    with open(data_path.joinpath("program.json"), "r") as f:
         program_data: dict = json.load(f)
 
     return (dept_data, program_data)

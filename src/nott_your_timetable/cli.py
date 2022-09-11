@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import argparse
-from utils import get_data, find_current_week_nott
+from .utils import get_data, find_current_week_nott
 
 
 def parse_arguments():
