@@ -11,10 +11,16 @@ requires-python = ">=3.10"
 dependencies = [
     "requests"
 ]
-version = "0.0.1"
+dynamic = ["version"]
 authors = [
     { name = "ecyht2", email = "ecyht2@nottingham.edu.my" }
 ]
 
 [project.scripts]
 nott-your-timetable = "nott_your_timetable.nott_your_timetable:main_cli"
+
+[project.urls]
+"Homepage" = "https://github.com/ecyht2/nott-your-timetable"
+
+[tool.setuptools.dynamic]
+version = { attr = "nott_your_timetable.__version__" }
