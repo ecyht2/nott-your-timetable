@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
+"""CLI related functions."""
 import argparse
 from .utils import get_data, find_current_week_nott
 
 
 def parse_arguments():
+    """Parses the cli arguments for nott-your-timetable-cli."""
     parser = argparse.ArgumentParser(description='Exports Timetable for\
     University of Nottingham Malaysia Student.')
 
@@ -82,6 +84,7 @@ def parse_arguments():
 
 
 def get_school_interactive() -> tuple[str, list[str]]:
+    """Code logic for interactive mode."""
     school = None
     program = None
 

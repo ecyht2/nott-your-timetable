@@ -9,6 +9,7 @@ import datetime
 
 
 def main_cli():
+    """CLI main function."""
     args = parse_arguments()
     today = datetime.date.today()
 
