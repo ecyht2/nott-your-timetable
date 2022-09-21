@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Main Functions to run."""
 import requests
 import sys
 from .utils import (ScheduleParser, table_to_dict, csv_export, handle_ranges,
