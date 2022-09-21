@@ -9,6 +9,8 @@ import csv
 from string import whitespace
 import json
 from importlib.resources import files
+from collections import defaultdict
+from typing import Any
 
 
 # Other Utils
@@ -388,12 +390,29 @@ def table_to_dict(table: str | ET.Element, indexs: list[str] = None,
     return output
 
 
-# Utils for exporting
-def csv_export(data: dict, weeks: list,
-               output: str = "output.csv") -> list[list]:
-    """Exports the timetable in a csv format."""
+def parse_data(data: dict, weeks: list) -> dict:
+    """Combines all the parts of the tables into it's own list.
+
+    Parameter
+    ---------
+    data: dict
+        The data
+    weeks: list
+        The weeks to parse
+
+    Return
+    ------
+    dict
+        The parsed data
+    """
     start_day = find_week1()
-    csv_data = []
+
+    output_data = {
+        "Module": [],
+        "Start": [],
+        "End": [],
+        "Date": []
+    }
 
     # Looping Over all they day of the week
     for day, day_data in data.items():
@@ -408,33 +427,153 @@ def csv_export(data: dict, weeks: list,
             module_weeks = day_data['Weeks'][i]
             module = day_data['Module'][i]
 
+            # Getting Start Time
             start = day_data['Start'][i].split(":")
             start = datetime.time(hour=int(start[0]), minute=int(start[1]))
+            # Getting End Time
             end = day_data['End'][i].split(":")
             end = datetime.time(hour=int(end[0]), minute=int(end[1]))
 
+            # Looping through all the weeks
             for week in handle_ranges(module_weeks):
                 if week not in weeks:
                     continue
                 date = date_with_day + datetime.timedelta(weeks=week-1)
-                csv_data.append([date, start, end, module, day_data['Room'][i]])
 
-    csv_data.sort()
-    csv_data.insert(0, ["Date", "Start", "End", "Module", "Room"])
+                # Appending Data
+                output_data["Module"].append(module)
+                output_data["Date"].append(date)
+                output_data["Start"].append(start)
+                output_data["End"].append(end)
 
-    with open(output, "w", newline="") as csvfile:
-        writer = csv.writer(csvfile)
-        writer.writerows(csv_data)
-    return csv_data
-
-
-def notion_export():
-    ...
+    # Returing Data
+    return output_data
 
 
-def google_export():
-    ...
+# Utils for exporting
+class ScheduleData(defaultdict):
+    def __init__(self, subject: list, start_date: list,
+                 start_time: list = [],
+                 end_date: list = [], end_time: list = [],
+                 all_day_event: list = [], description: list = [],
+                 location: list = [], private_event: list = []):
+        super().__init__(list)
 
+        # Ensuring equal length
+        if len(subject) != len(start_date):
+            raise ValueError("subject and start_date must be the same length")
 
-def microsoft_export():
-    ...
+        # Storing Variables
+        # https://support.google.com/calendar/answer/37118?hl=en&co=GENIE.Platform%3DDesktop
+        self["Subject"] = subject
+        self["Start Date"] = start_date
+        self["Start Time"] = start_time
+        self["End Date"] = end_date
+        self["End Time"] = end_time
+        self["All Day Event"] = all_day_event
+        self["Description"] = description
+        self["Location"]: list = location
+
+        # Adding Dummy Values
+        for key in self:
+            if key == "Subject" or key == "Start Date":
+                continue
+
+            items = self[key]
+            while len(items) < len(self["Subject"]):
+                items.append(None)
+
+        # Sorting Keys
+        # Making a copy of need values
+        self.__sorting_indexs = [
+            self["Start Date"].copy(),
+            self["Start Time"].copy(),
+            self["Subject"].copy()
+        ]
+        # Looping over all values
+        for items in self.values():
+            self.__current_index = 0
+            items.sort(key=self.__sort_indexs)
+
+    def export_csv(self, output: str = "output.csv") -> list[list]:
+        """Exports the timetable in a csv format.
+
+        Parameters
+        ----------
+        output: str
+            Output file name
+
+        Returns
+        -------
+        list[list]
+            A list of all the rows containg all the csv data
+        """
+        output_value = []
+
+        with open(output, "w") as f:
+            writer = csv.writer(f)
+            # Adding Label Row
+            output_value.append([
+                "Subject", "Start Date", "Start Time", "End Date", "End Time",
+                "All Day Event", "Description", "Location"
+            ])
+
+            # Looping over all values
+            for i in range(len(self["Subject"])):
+                output_value.append([
+                    self["Subject"][i], self["Start Date"][i],
+                    self["Start Time"][i], self["End Date"][i],
+                    self["End Time"][i], self["All Day Event"][i],
+                    self["Description"][i], self["Location"][i]
+                ])
+
+            # Writting Values
+            writer.writerows(output_value)
+
+        return output_value
+
+    def export_ical(self, output: str = "output.ics"):
+        """Exports the timetable in a iCalander format.
+        The format is compatible with
+        RCF 5545 see link below for more information:
+        https://www.ietf.org/rfc/rfc5545.txt
+
+        Parameters
+        ----------
+        output: str
+            Output file name
+        """
+        ...
+
+    def export_vcard(self, output: str = "output.vcard"):
+        """Exports the timetable in a vCard format.
+
+        Parameters
+        ----------
+        output: str
+            Output file name
+        """
+        ...
+
+    def __sort_indexs(self, index: Any) -> list:
+        """Returns the key such that the lists would be sorted based on
+        Start Date -> Start Time (if used) -> Subject.
+
+        Parameters
+        ----------
+        index: Any
+            Not used but added because it is required
+
+        Returns
+        -------
+        list
+            A list to be sorted by
+        """
+        index: int = self.__current_index
+        data = [
+            self.__sorting_indexs[0][index],
+            self.__sorting_indexs[1][index],
+            self.__sorting_indexs[2][index]
+        ]
+        self.__current_index += 1
+        return data
