@@ -28,10 +28,7 @@ def main_cli():
         days = [today.isoweekday()]
         weeks = [find_current_week_nott()]
 
-    if days[0] < 1 or days[-1] > 7:
-        print("Invalid Range, Please Check Inserted Value", file=sys.stderr)
-        return 1
-    if weeks[0] < 1 or weeks[-1] > 52:
+    if (days[0] < 1 or days[-1] > 7) or (weeks[0] < 1 or weeks[-1] > 52):
         print("Invalid Range, Please Check Inserted Value", file=sys.stderr)
         return 1
 
@@ -40,7 +37,7 @@ def main_cli():
     else:
         school, program = args.course
 
-    program_value = None
+    # Getting the pogram values
     try:
         program_value = get_program_value(school, program)
     except ValueError:
