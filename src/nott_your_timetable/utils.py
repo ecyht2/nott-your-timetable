@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Functions and Classes used by nott-your-timetable."""
 from xml.etree import ElementTree as ET
 from html.parser import HTMLParser
 import html
