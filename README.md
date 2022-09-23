@@ -19,7 +19,7 @@ pip install -r requirements.txt
 ```
 
 # Usage
-A simple usage to export the entire year to a csv.
+A simple usage to export the entire year to a ics file by default.
 
 **Note:** The quotes are needed if you are putting spaces inbetween
 
@@ -51,6 +51,11 @@ If you don't know what school/division and program, the `-i` flag can be used to
 
 ```sh
 ./nott-your-timetable -i
+```
+
+To export the output to csv
+```sh
+./nott-your-timetable -c "E & EE" "BEng Hons Electl & Electnc Eng/F/02 - H603 Electrical and Electronic Engineering" -o csv
 ```
 
 There are more options available, to see all the options use the help argument.
