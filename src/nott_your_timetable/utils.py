@@ -49,14 +49,16 @@ def handle_ranges(value: str) -> list[int]:
                 range_split.sort()
                 for j in range(range_split[0], range_split[1] + 1):
                     output.append(j)
-            except ValueError:
-                raise ValueError("Invalid Range, Please Check Inserted Value")
+            except ValueError as err:
+                raise ValueError("Invalid Range, Please Check Inserted Value")\
+                    from err
         # Adding normal values
         else:
             try:
                 output.append(int(i))
-            except ValueError:
-                raise ValueError("Invalid Range, Please Check Inserted Value")
+            except ValueError as err:
+                raise ValueError("Invalid Range, Please Check Inserted Value")\
+                    from err
 
     # Sorting Output
     output.sort()
@@ -101,14 +103,16 @@ def handle_ranges_days(value: str) -> list[int]:
                 range_split.sort()
                 for j in range(range_split[0], range_split[1] + 1):
                     output.append(j)
-            except ValueError:
-                raise ValueError("Invalid Range, Please Check Inserted Value")
+            except ValueError as err:
+                raise ValueError("Invalid Range, Please Check Inserted Value")\
+                    from err
         # Adding normal values
         else:
             try:
                 output.append(int(i))
-            except ValueError:
-                raise ValueError("Invalid Range, Please Check Inserted Value")
+            except ValueError as err:
+                raise ValueError("Invalid Range, Please Check Inserted Value")\
+                    from err
 
     # Sorting Output
     output.sort()
