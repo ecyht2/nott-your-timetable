@@ -64,11 +64,11 @@ def parse_arguments():
 
     # Output Options
     output_group = parser.add_argument_group(title="Output Options")
-    output_group.add_argument('-o', '--output', type=str, default="output.csv",
+    output_group.add_argument('-o', '--output', type=str, default=None,
                               help="Sets the output file name.")
-    output_group.add_argument('-t', '--type', type=str, default="csv",
-                              help="Sets the output format.\
-                              (Not Yet Available)")
+    output_group.add_argument('-f', '--format', type=str, default="ics",
+                              choices=["csv", "ics"],
+                              help="Sets the output format.")
 
     # Course Selection
     course_group = parser.add_mutually_exclusive_group(required=True)

@@ -11,6 +11,8 @@ import json
 from importlib.resources import files
 from collections import defaultdict
 from typing import Any
+from icalendar import Calendar as iCalendar
+from icalendar import Event as iEvent
 
 
 # Other Utils
@@ -543,7 +545,34 @@ class ScheduleData(defaultdict):
         output: str
             Output file name
         """
-        ...
+        cal = iCalendar()
+        cal.add("version", "2.0")
+        cal.add("prodid", "-//nott-your-timetable//Nottingham Schedule/EN")
+
+        for i in range(len(self["Subject"])):
+            event = iEvent()
+
+            # Ignoing time if is is all day event
+            if self["All Day Event"][i] is not None:
+                dtstart = self["Start Date"][i]
+                dtend = self["End Date"][i]
+            else:
+                dtstart = datetime.datetime.combine(self["Start Date"][i],
+                                                    self["Start Time"][i])
+                dtend = datetime.datetime.combine(self["Start Date"][i],
+                                                  self["End Time"][i])
+
+            event.add("dtstamp", datetime.datetime.now())
+            event.add("uid", self.__get_uid(i))
+            event.add("dtstart", dtstart)
+            event.add("dtend", dtend)
+            event.add("summary", self["Subject"][i])
+            event.add("location", self["Location"][i])
+
+            cal.add_component(event)
+
+        with open(output, "wb") as f:
+            f.write(cal.to_ical())
 
     def export_vcard(self, output: str = "output.vcard"):
         """Exports the timetable in a vCard format.
@@ -577,3 +606,12 @@ class ScheduleData(defaultdict):
         ]
         self.__current_index += 1
         return data
+
+    def __get_uid(self, index: int) -> str:
+        """Gets a UID forr an event."""
+        date = self["Start Date"][index]
+        subject = self["Subject"][index]
+        start = self["Start Time"][index]
+        end = self["End Time"][index]
+
+        return f"{date}-{subject}-{start}-{end}"

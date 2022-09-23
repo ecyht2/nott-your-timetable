@@ -2,8 +2,8 @@
 """Main Functions to run."""
 import requests
 import sys
-from .utils import (ScheduleParser, table_to_dict, csv_export, handle_ranges,
-                    handle_ranges_days, get_program_value,
+from .utils import (ScheduleParser, table_to_dict, handle_ranges, parse_data,
+                    handle_ranges_days, get_program_value, ScheduleData,
                     find_current_week_nott)
 from .cli import get_school_interactive, parse_arguments
 import datetime
@@ -20,7 +20,11 @@ def main_cli():
     except ValueError:
         print("Invalid Range, Please Check Inserted Value", file=sys.stderr)
         return 1
+
     output = args.output
+    output_format = args.format
+    if output is None:
+        output = "output." + output_format
 
     if args.today:
         days = [today.isoweekday()]
@@ -60,5 +64,17 @@ height=100&week=100"
     for table in tables:
         data[table] = table_to_dict(tables[table], verbose=False)
 
-    csv_export(data, weeks, output)
+    parsed_data = parse_data(data, weeks)
+    s_data = ScheduleData(parsed_data["Module"], parsed_data["Date"],
+                          start_time=parsed_data["Start"],
+                          end_time=parsed_data["End"])
+
+    if output_format == "csv":
+        s_data.export_csv(output)
+    elif output_format == "ics":
+        s_data.export_ical(output)
+    else:
+        # Probably not gonna happen but added for redundancy
+        print("Invalid Format", file=sys.stderr)
+        return 1
     return 0
