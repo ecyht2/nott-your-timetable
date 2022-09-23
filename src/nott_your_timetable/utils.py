@@ -591,7 +591,8 @@ class ScheduleData(defaultdict):
         output: str
             Output file name
         """
-        ...
+        with open(output, "w") as fp:
+            fp.write("WIP")
 
     def __sort_indexs(self, index: Any) -> list:
         """Returns the key such that the lists would be sorted based on
