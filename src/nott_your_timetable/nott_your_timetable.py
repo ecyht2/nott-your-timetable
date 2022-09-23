@@ -14,6 +14,7 @@ def main_cli():
     args = parse_arguments()
     today = datetime.date.today()
 
+    # Getting all the day and week ranges
     try:
         days = handle_ranges_days(args.days)
         weeks = handle_ranges(args.weeks)
@@ -21,17 +22,21 @@ def main_cli():
         print("Invalid Range, Please Check Inserted Value", file=sys.stderr)
         return 1
 
+    # Using default output filename
     if args.output is None:
         args.output = "output." + args.format
 
+    # If today is specified
     if args.today:
         days = [today.isoweekday()]
         weeks = [find_current_week_nott()]
 
+    # Checking if ranges are valid
     if (days[0] < 1 or days[-1] > 7) or (weeks[0] < 1 or weeks[-1] > 52):
         print("Invalid Range, Please Check Inserted Value", file=sys.stderr)
         return 1
 
+    # Interactive mode
     if args.interactive:
         school, program = get_school_interactive()
     else:
