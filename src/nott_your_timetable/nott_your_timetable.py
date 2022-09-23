@@ -52,7 +52,12 @@ TextSpreadsheet;programme+of+study;id;{program_value}%0D%0A?\
 days=1-7&weeks=1-52&periods=3-20&template=SWSCUST+programme+of+study+TextSpreadsheet&\
 height=100&week=100"
 
-    response: requests.Response = requests.get(link)
+    try:
+        response: requests.Response = requests.get(link, timeout=10)
+    except requests.ConnectTimeout:
+        print("HTTP request taking too long, please check your internet"
+              "connection", file=sys.stderr)
+        return 1
     parser = ScheduleParser(days)
     parser.feed(response.text)
     parser.close()
