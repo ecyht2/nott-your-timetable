@@ -233,6 +233,8 @@ def find_current_week_nott() -> int:
 
 # Utils for parsing data
 class DayOfWeek(Enum):
+    """Enumaration fo Day of Week."""
+    # pylint: disable=invalid-name
     Monday = 0
     Mon = 0
     Tuesday = 1
@@ -250,6 +252,8 @@ class DayOfWeek(Enum):
 
 
 class DayOfWeekISO(Enum):
+    """Enumaration fo Day of Week using ISO format."""
+    # pylint: disable=invalid-name
     Monday = 1
     Mon = 1
     Tuesday = 2
