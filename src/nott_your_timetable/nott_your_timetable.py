@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """Main Functions to run."""
-import requests
 import sys
+import datetime
+import requests
 from .utils import (ScheduleParser, table_to_dict, handle_ranges, parse_data,
                     handle_ranges_days, get_program_value, ScheduleData,
                     find_current_week_nott)
 from .cli import get_school_interactive, parse_arguments
-import datetime
 
 
 def main_cli():
@@ -21,10 +21,8 @@ def main_cli():
         print("Invalid Range, Please Check Inserted Value", file=sys.stderr)
         return 1
 
-    output = args.output
-    output_format = args.format
-    if output is None:
-        output = "output." + output_format
+    if args.output is None:
+        args.output = "output." + args.format
 
     if args.today:
         days = [today.isoweekday()]
@@ -33,7 +31,7 @@ def main_cli():
     if days[0] < 1 or days[-1] > 7:
         print("Invalid Range, Please Check Inserted Value", file=sys.stderr)
         return 1
-    elif weeks[0] < 1 or weeks[-1] > 52:
+    if weeks[0] < 1 or weeks[-1] > 52:
         print("Invalid Range, Please Check Inserted Value", file=sys.stderr)
         return 1
 
@@ -59,20 +57,19 @@ height=100&week=100"
     parser.feed(response.text)
     parser.close()
 
-    tables = parser.tables
-    data = tables.copy()
-    for table in tables:
-        data[table] = table_to_dict(tables[table], verbose=False)
+    data = parser.tables.copy()
+    for key, value in parser.tables.items():
+        data[key] = table_to_dict(value, verbose=False)
 
     parsed_data = parse_data(data, weeks)
-    s_data = ScheduleData(parsed_data["Module"], parsed_data["Date"],
-                          start_time=parsed_data["Start"],
-                          end_time=parsed_data["End"])
+    schedule_data = ScheduleData(parsed_data["Module"], parsed_data["Date"],
+                                 start_time=parsed_data["Start"],
+                                 end_time=parsed_data["End"])
 
-    if output_format == "csv":
-        s_data.export_csv(output)
-    elif output_format == "ics":
-        s_data.export_ical(output)
+    if args.format == "csv":
+        schedule_data.export_csv(args.output)
+    elif args.format == "ics":
+        schedule_data.export_ical(args.output)
     else:
         # Probably not gonna happen but added for redundancy
         print("Invalid Format", file=sys.stderr)
