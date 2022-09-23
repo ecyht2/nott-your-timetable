@@ -63,7 +63,7 @@ There are more options available, to see all the options use the help argument.
 # TODO
   * [ ] Support for exporting to other formats
     * [x] CSV
-    * [ ] iCalander
+    * [x] iCalander
     * [ ] vCard
   * [x] Support for other course programs
   * [x] Add more convinience option e.g. Schedule for Spring Semester
