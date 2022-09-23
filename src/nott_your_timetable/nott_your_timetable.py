@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Main Functions to run."""
 import requests
 import sys
 from .utils import (ScheduleParser, table_to_dict, csv_export, handle_ranges,
@@ -9,6 +10,7 @@ import datetime
 
 
 def main_cli():
+    """CLI main function."""
     args = parse_arguments()
     today = datetime.date.today()
 
