@@ -55,7 +55,7 @@ If you don't know what school/division and program, the `-i` flag can be used to
 
 To export the output to csv
 ```sh
-./nott-your-timetable -c "E & EE" "BEng Hons Electl & Electnc Eng/F/02 - H603 Electrical and Electronic Engineering" -o csv
+./nott-your-timetable -c "E & EE" "BEng Hons Electl & Electnc Eng/F/02 - H603 Electrical and Electronic Engineering" -f csv
 ```
 
 There are more options available, to see all the options use the help argument.
