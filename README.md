@@ -3,7 +3,7 @@ Exports Timetable for University of Nottingham Malaysia Student.
 
 # Installation
 ## Requirements
-`python>=3.0` Latest version of Python can be downloaded [here](https://www.python.org/downloads/) for more information
+`python>=3.10` Latest version of Python can be downloaded [here](https://www.python.org/downloads/) for more information
 
 ## Installing via Pip
 ``` sh
