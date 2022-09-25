@@ -69,7 +69,8 @@ height=100&week=100"
     parsed_data = parse_data(data, weeks)
     schedule_data = ScheduleData(parsed_data["Module"], parsed_data["Date"],
                                  start_time=parsed_data["Start"],
-                                 end_time=parsed_data["End"])
+                                 end_time=parsed_data["End"],
+                                 location=parsed_data["Room"])
 
     if args.format == "csv":
         schedule_data.export_csv(args.output)
