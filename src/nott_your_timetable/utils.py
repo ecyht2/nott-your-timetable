@@ -491,13 +491,13 @@ class ScheduleData(defaultdict):
 
         # Storing Variables
         # https://support.google.com/calendar/answer/37118?hl=en&co=GENIE.Platform%3DDesktop
-        self["Subject"] = subject
-        self["Start Date"] = start_date
-        self["Start Time"] = start_time
-        self["End Date"] = end_date
-        self["End Time"] = end_time
-        self["All Day Event"] = all_day_event
-        self["Description"] = description
+        self["Subject"]: list = subject
+        self["Start Date"]: list = start_date
+        self["Start Time"]: list = start_time
+        self["End Date"]: list = end_date
+        self["End Time"]: list = end_time
+        self["All Day Event"]: list = all_day_event
+        self["Description"]: list = description
         self["Location"]: list = location
 
         # Adding Dummy Values
