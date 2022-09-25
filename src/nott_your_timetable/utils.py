@@ -536,8 +536,8 @@ class ScheduleData(defaultdict):
         """
         output_value = []
 
-        with open(output, "w") as f:
-            writer = csv.writer(f)
+        with open(output, "w", encoding="utf-8") as file:
+            writer = csv.writer(file)
             # Adding Label Row
             output_value.append([
                 "Subject", "Start Date", "Start Time", "End Date", "End Time",
@@ -595,8 +595,8 @@ class ScheduleData(defaultdict):
 
             cal.add_component(event)
 
-        with open(output, "wb") as f:
-            f.write(cal.to_ical())
+        with open(output, "wb") as file:
+            file.write(cal.to_ical())
 
     def export_vcard(self, output: str = "output.vcard"):
         """Exports the timetable in a vCard format.
@@ -606,8 +606,8 @@ class ScheduleData(defaultdict):
         output: str
             Output file name
         """
-        with open(output, "w") as fp:
-            fp.write("WIP")
+        with open(output, "w", encoding="utf-8") as file:
+            file.write("WIP")
 
     def export(self, export_format: str, output: str) -> int:
         """Exports the data to a given format.
