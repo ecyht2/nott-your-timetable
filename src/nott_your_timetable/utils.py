@@ -478,6 +478,7 @@ def parse_data(data: dict, weeks: list) -> dict:
 
 # Utils for exporting
 class ScheduleData(defaultdict):
+    """Object that holds all the data of a Schedule."""
     def __init__(self, subject: list, start_date: list,
                  start_time: list = [],
                  end_date: list = [], end_time: list = [],
