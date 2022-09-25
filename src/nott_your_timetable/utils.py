@@ -290,7 +290,7 @@ class ScheduleParser(HTMLParser):
     days: list[int] = [1, 2, 3, 4, 5, 6, 7]
         A list of days of the week to look for
     """
-    def __init__(self, days: list[int] = [i for i in range(1, 8)]):
+    def __init__(self, days: list[int] = list(range(1, 8))):
         super().__init__()
 
         # Declaring needed variables
