@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Functions and Classes used by nott-your-timetable."""
+import sys
 from xml.etree import ElementTree as ET
 from html.parser import HTMLParser
 import html
@@ -597,6 +598,34 @@ class ScheduleData(defaultdict):
         """
         with open(output, "w") as fp:
             fp.write("WIP")
+
+    def export(self, export_format: str, output: str) -> int:
+        """Exports the data to a given format.
+
+        Parameters
+        ----------
+        export_format: str
+            The format to export in.
+            It can be [ics, vcard (WIP), csv]
+        output: str
+            Output filename
+
+        Returns
+        -------
+        int
+            0 if successful
+            1 if unsuccessful (e.g. invalid format)
+        """
+        if export_format == "csv":
+            self.export_csv(output)
+        elif export_format == "ics":
+            self.export_ical(output)
+        else:
+            # Probably not gonna happen but added for redundancy
+            print("Invalid Format", file=sys.stderr)
+            return 1
+
+        return 0
 
     def __sort_indexs(self, index: Any) -> list:
         """Returns the key such that the lists would be sorted based on
