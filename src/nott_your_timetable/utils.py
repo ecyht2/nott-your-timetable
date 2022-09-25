@@ -169,7 +169,7 @@ def get_program_value(school: str, program: str) -> str:
 
 
 def find_first_day(day: int | str, year: int, month: int,
-                   ISO: bool = False) -> int:
+                   iso: bool = False) -> int:
     """Finds the first day of week of a given month and year.
 
     Parameters
@@ -180,7 +180,7 @@ def find_first_day(day: int | str, year: int, month: int,
         The year of interest
     month: int
         The month of interest
-    ISO: bool
+    iso: bool
         Use the ISO the numbering system to use when specifying day of week
         Can be ignored when day is given as a string
 
@@ -194,17 +194,21 @@ def find_first_day(day: int | str, year: int, month: int,
 
     if isinstance(day, int):
         day_index = day
-        if ISO:
+        if iso:
             day -= 1
     elif isinstance(day, str):
         try:
             day_index = DayOfWeek[day.title()].value
-        except KeyError:
-            raise ValueError("Invalid Day of Week")
+        except KeyError as err:
+            raise ValueError("Invalid Day of Week") from err
 
+    day_number = 1
     for week in weeks:
         if week[day_index] > 0:
-            return week[day_index]
+            day_number = week[day_index]
+            break
+
+    return day_number
 
 
 def find_week1() -> datetime.date:
