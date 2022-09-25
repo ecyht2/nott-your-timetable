@@ -311,8 +311,9 @@ class ScheduleParser(HTMLParser):
                 data = html.escape(data)
                 self.tables[self.current_day] += data
 
-    def handle_starttag(self, tag, attr):
+    def handle_starttag(self, tag, attrs):
         """Handles start tags received."""
+        # pylint: disable=unused-argument
         if not self.day_found:
             return
         if (tag == "table" or self.table_found):
