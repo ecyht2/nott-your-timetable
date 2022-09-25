@@ -2,20 +2,12 @@
 Exports Timetable for University of Nottingham Malaysia Student.
 
 # Installation
-## Cloning Repo
+## Requirements
+`python>=3.0` Latest version of Python can be downloaded [here](https://www.python.org/downloads/) for more information
+
+## Installing via Pip
 ``` sh
-git clone https://github.com/IEEE-UNM/nott-your-timetable.git
-cd nott-your-timetable
-```
-## Installing requirements
-### Using Pipenv
-``` sh
-pipenv install
-```
-### Using venv/pip
-Activate your virtual environment then:
-``` sh
-pip install -r requirements.txt
+pip install nott-your-timetable
 ```
 
 # Usage
@@ -26,42 +18,42 @@ A simple usage to export the entire year to a ics file by default.
 Gets the timetable for Electrical and Electronic Engineering BEng Year 2:
 
 ```sh
-./nott-your-timetable -c "E & EE" "BEng Hons Electl & Electnc Eng/F/02 - H603 Electrical and Electronic Engineering"
+nott-your-timetable -c "E & EE" "BEng Hons Electl & Electnc Eng/F/02 - H603 Electrical and Electronic Engineering"
 ```
 
 Only for week 1 to week 10.
 
 ```sh
-./nott-your-timetable -w '1-10' -c "E & EE" "BEng Hons Electl & Electnc Eng/F/02 - H603 Electrical and Electronic Engineering"
+nott-your-timetable -w '1-10' -c "E & EE" "BEng Hons Electl & Electnc Eng/F/02 - H603 Electrical and Electronic Engineering"
 ```
 
 Only for Monday to Friday.
 
 ```sh
-./nott-your-timetable -c "E & EE" "BEng Hons Electl & Electnc Eng/F/02 - H603 Electrical and Electronic Engineering" -d 1-5
+nott-your-timetable -c "E & EE" "BEng Hons Electl & Electnc Eng/F/02 - H603 Electrical and Electronic Engineering" -d 1-5
 ```
 
 Only for week 4 to week 6 Monday to Friday.
 
 ```sh
-./nott-your-timetable -c "E & EE" "BEng Hons Electl & Electnc Eng/F/02 - H603 Electrical and Electronic Engineering" -d '4, 5, 6' -w 1-5
+nott-your-timetable -c "E & EE" "BEng Hons Electl & Electnc Eng/F/02 - H603 Electrical and Electronic Engineering" -d '4, 5, 6' -w 1-5
 ```
 
 If you don't know what school/division and program, the `-i` flag can be used to ender interactive mode.
 
 ```sh
-./nott-your-timetable -i
+nott-your-timetable -i
 ```
 
 To export the output to csv
 ```sh
-./nott-your-timetable -c "E & EE" "BEng Hons Electl & Electnc Eng/F/02 - H603 Electrical and Electronic Engineering" -f csv
+nott-your-timetable -c "E & EE" "BEng Hons Electl & Electnc Eng/F/02 - H603 Electrical and Electronic Engineering" -f csv
 ```
 
 There are more options available, to see all the options use the help argument.
 
 ```sh
-./nott-your-timetable -h
+nott-your-timetable -h
 ```
 
 
