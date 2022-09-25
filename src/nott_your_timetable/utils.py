@@ -503,7 +503,7 @@ class ScheduleData(defaultdict):
 
         # Adding Dummy Values
         for key in self:
-            if key == "Subject" or key == "Start Date":
+            if key in ("Subject", "Start Date"):
                 continue
 
             items = self[key]
