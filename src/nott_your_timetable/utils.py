@@ -413,7 +413,8 @@ def parse_data(data: dict, weeks: list) -> dict:
         "Module": [],
         "Start": [],
         "End": [],
-        "Date": []
+        "Date": [],
+        "Room": []
     }
 
     # Looping Over all they day of the week
@@ -436,6 +437,8 @@ def parse_data(data: dict, weeks: list) -> dict:
             end = day_data['End'][i].split(":")
             end = datetime.time(hour=int(end[0]), minute=int(end[1]))
 
+            room = day_data["Room"][i]
+
             # Looping through all the weeks
             for week in handle_ranges(module_weeks):
                 if week not in weeks:
@@ -447,6 +450,7 @@ def parse_data(data: dict, weeks: list) -> dict:
                 output_data["Date"].append(date)
                 output_data["Start"].append(start)
                 output_data["End"].append(end)
+                output_data["Room"].append(room)
 
     # Returing Data
     return output_data
