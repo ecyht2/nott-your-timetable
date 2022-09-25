@@ -60,6 +60,7 @@ height=100&week=100"
         print("HTTP request taking too long, please check your internet"
               "connection", file=sys.stderr)
         return 1
+
     parser = ScheduleParser(days)
     parser.feed(response.text)
     parser.close()
@@ -73,12 +74,4 @@ height=100&week=100"
                                  start_time=parsed_data["Start"],
                                  end_time=parsed_data["End"])
 
-    if args.format == "csv":
-        schedule_data.export_csv(args.output)
-    elif args.format == "ics":
-        schedule_data.export_ical(args.output)
-    else:
-        # Probably not gonna happen but added for redundancy
-        print("Invalid Format", file=sys.stderr)
-        return 1
-    return 0
+    return schedule_data.export(args.format, args.output)
