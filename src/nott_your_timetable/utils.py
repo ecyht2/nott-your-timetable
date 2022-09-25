@@ -130,10 +130,12 @@ def get_data() -> tuple[dict, dict]:
         and the second one is the program data.
     """
     data_path = files('nott_your_timetable.data')
-    with open(data_path.joinpath("dept.json"), "r") as f:
-        dept_data: dict = json.load(f)
-    with open(data_path.joinpath("program.json"), "r") as f:
-        program_data: dict = json.load(f)
+    with open(data_path.joinpath("dept.json"), "r", encoding="utf-8")\
+         as file:
+        dept_data: dict = json.load(file)
+    with open(data_path.joinpath("program.json"), "r", encoding="utf-8")\
+         as file:
+        program_data: dict = json.load(file)
 
     return (dept_data, program_data)
 
