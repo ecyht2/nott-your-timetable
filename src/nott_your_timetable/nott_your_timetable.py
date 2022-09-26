@@ -14,6 +14,7 @@ def main_cli():
     args = parse_arguments()
     today = datetime.date.today()
 
+    # Getting all the day and week ranges
     try:
         days = handle_ranges_days(args.days)
         weeks = handle_ranges(args.weeks)
@@ -21,26 +22,27 @@ def main_cli():
         print("Invalid Range, Please Check Inserted Value", file=sys.stderr)
         return 1
 
+    # Using default output filename
     if args.output is None:
         args.output = "output." + args.format
 
+    # If today is specified
     if args.today:
         days = [today.isoweekday()]
         weeks = [find_current_week_nott()]
 
-    if days[0] < 1 or days[-1] > 7:
-        print("Invalid Range, Please Check Inserted Value", file=sys.stderr)
-        return 1
-    if weeks[0] < 1 or weeks[-1] > 52:
+    # Checking if ranges are valid
+    if (days[0] < 1 or days[-1] > 7) or (weeks[0] < 1 or weeks[-1] > 52):
         print("Invalid Range, Please Check Inserted Value", file=sys.stderr)
         return 1
 
+    # Interactive mode
     if args.interactive:
         school, program = get_school_interactive()
     else:
         school, program = args.course
 
-    program_value = None
+    # Getting the pogram values
     try:
         program_value = get_program_value(school, program)
     except ValueError:
@@ -58,6 +60,7 @@ height=100&week=100"
         print("HTTP request taking too long, please check your internet"
               "connection", file=sys.stderr)
         return 1
+
     parser = ScheduleParser(days)
     parser.feed(response.text)
     parser.close()
@@ -67,17 +70,11 @@ height=100&week=100"
         data[key] = table_to_dict(value, verbose=False)
 
     parsed_data = parse_data(data, weeks)
-    schedule_data = ScheduleData(parsed_data["Module"], parsed_data["Date"],
-                                 start_time=parsed_data["Start"],
-                                 end_time=parsed_data["End"],
-                                 location=parsed_data["Room"])
+    schedule_data = ScheduleData()
+    schedule_data.set("Subject", parsed_data["Module"])
+    schedule_data.set("Start Date", parsed_data["Date"])
+    schedule_data.set("Start Time", parsed_data["Start"])
+    schedule_data.set("End Time", parsed_data["End"])
+    schedule_data.set("Location", parsed_data["Room"])
 
-    if args.format == "csv":
-        schedule_data.export_csv(args.output)
-    elif args.format == "ics":
-        schedule_data.export_ical(args.output)
-    else:
-        # Probably not gonna happen but added for redundancy
-        print("Invalid Format", file=sys.stderr)
-        return 1
-    return 0
+    return schedule_data.export(args.format, args.output)

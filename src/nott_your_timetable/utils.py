@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+"""Functions and Classes used by nott-your-timetable."""
+import sys
 from xml.etree import ElementTree as ET
 from html.parser import HTMLParser
 import html
@@ -10,7 +12,8 @@ from string import whitespace
 import json
 from importlib.resources import files
 from collections import defaultdict
-from typing import Any
+from collections.abc import Iterable
+from typing import Any, NoReturn
 from icalendar import Calendar as iCalendar
 from icalendar import Event as iEvent
 
@@ -48,14 +51,16 @@ def handle_ranges(value: str) -> list[int]:
                 range_split.sort()
                 for j in range(range_split[0], range_split[1] + 1):
                     output.append(j)
-            except ValueError:
-                raise ValueError("Invalid Range, Please Check Inserted Value")
+            except ValueError as err:
+                raise ValueError("Invalid Range, Please Check Inserted Value")\
+                    from err
         # Adding normal values
         else:
             try:
                 output.append(int(i))
-            except ValueError:
-                raise ValueError("Invalid Range, Please Check Inserted Value")
+            except ValueError as err:
+                raise ValueError("Invalid Range, Please Check Inserted Value")\
+                    from err
 
     # Sorting Output
     output.sort()
@@ -100,14 +105,16 @@ def handle_ranges_days(value: str) -> list[int]:
                 range_split.sort()
                 for j in range(range_split[0], range_split[1] + 1):
                     output.append(j)
-            except ValueError:
-                raise ValueError("Invalid Range, Please Check Inserted Value")
+            except ValueError as err:
+                raise ValueError("Invalid Range, Please Check Inserted Value")\
+                    from err
         # Adding normal values
         else:
             try:
                 output.append(int(i))
-            except ValueError:
-                raise ValueError("Invalid Range, Please Check Inserted Value")
+            except ValueError as err:
+                raise ValueError("Invalid Range, Please Check Inserted Value")\
+                    from err
 
     # Sorting Output
     output.sort()
@@ -124,10 +131,12 @@ def get_data() -> tuple[dict, dict]:
         and the second one is the program data.
     """
     data_path = files('nott_your_timetable.data')
-    with open(data_path.joinpath("dept.json"), "r") as f:
-        dept_data: dict = json.load(f)
-    with open(data_path.joinpath("program.json"), "r") as f:
-        program_data: dict = json.load(f)
+    with open(data_path.joinpath("dept.json"), "r", encoding="utf-8")\
+         as file:
+        dept_data: dict = json.load(file)
+    with open(data_path.joinpath("program.json"), "r", encoding="utf-8")\
+         as file:
+        program_data: dict = json.load(file)
 
     return (dept_data, program_data)
 
@@ -161,7 +170,7 @@ def get_program_value(school: str, program: str) -> str:
 
 
 def find_first_day(day: int | str, year: int, month: int,
-                   ISO: bool = False) -> int:
+                   iso: bool = False) -> int:
     """Finds the first day of week of a given month and year.
 
     Parameters
@@ -172,7 +181,7 @@ def find_first_day(day: int | str, year: int, month: int,
         The year of interest
     month: int
         The month of interest
-    ISO: bool
+    iso: bool
         Use the ISO the numbering system to use when specifying day of week
         Can be ignored when day is given as a string
 
@@ -186,17 +195,21 @@ def find_first_day(day: int | str, year: int, month: int,
 
     if isinstance(day, int):
         day_index = day
-        if ISO:
+        if iso:
             day -= 1
     elif isinstance(day, str):
         try:
             day_index = DayOfWeek[day.title()].value
-        except KeyError:
-            raise ValueError("Invalid Day of Week")
+        except KeyError as err:
+            raise ValueError("Invalid Day of Week") from err
 
+    day_number = 1
     for week in weeks:
         if week[day_index] > 0:
-            return week[day_index]
+            day_number = week[day_index]
+            break
+
+    return day_number
 
 
 def find_week1() -> datetime.date:
@@ -233,6 +246,8 @@ def find_current_week_nott() -> int:
 
 # Utils for parsing data
 class DayOfWeek(Enum):
+    """Enumaration fo Day of Week."""
+    # pylint: disable=invalid-name
     Monday = 0
     Mon = 0
     Tuesday = 1
@@ -250,6 +265,8 @@ class DayOfWeek(Enum):
 
 
 class DayOfWeekISO(Enum):
+    """Enumaration fo Day of Week using ISO format."""
+    # pylint: disable=invalid-name
     Monday = 1
     Mon = 1
     Tuesday = 2
@@ -274,8 +291,11 @@ class ScheduleParser(HTMLParser):
     days: list[int] = [1, 2, 3, 4, 5, 6, 7]
         A list of days of the week to look for
     """
-    def __init__(self, days: list[int] = [i for i in range(1, 8)]):
+    def __init__(self, days: list[int] = None):
         super().__init__()
+
+        if days is None:
+            days = list(range(1, 8))
 
         # Declaring needed variables
         self.day_found: bool = False
@@ -301,8 +321,9 @@ class ScheduleParser(HTMLParser):
                 data = html.escape(data)
                 self.tables[self.current_day] += data
 
-    def handle_starttag(self, tag, attr):
+    def handle_starttag(self, tag, attrs):
         """Handles start tags received."""
+        # pylint: disable=unused-argument
         if not self.day_found:
             return
         if (tag == "table" or self.table_found):
@@ -345,6 +366,19 @@ def table_to_dict(table: str | ET.Element, indexs: list[str] = None,
     ----
     Handle Uneven Spaces
     """
+    # Setting Up function to print verbose statments
+    def print_verbose(verbosity: bool, print_index: int):
+        if not verbosity:
+            return
+
+        match print_index:
+            case 0:
+                print("No Data in table")
+            case 1:
+                print("No Indexs Provided, Using first row as index")
+            case 2:
+                print("Not Enough Data at Row")
+
     # Getting Element Tree
     if isinstance(table, ET.Element):
         data: ET.Element = table
@@ -353,15 +387,13 @@ def table_to_dict(table: str | ET.Element, indexs: list[str] = None,
 
     # Returning None if there isn't any data in table
     if data.find("tr") is None:
-        if verbose:
-            print("No Data in table")
+        print_verbose(verbose, 0)
         return None
 
     # Setting indexes/label used for the csv
     indexed = False
     if indexs is None:
-        if verbose:
-            print("No Indexs Provided, Using first row as index")
+        print_verbose(verbose, 1)
 
         indexs = []
         for col in data.findall("tr")[0].findall("td"):
@@ -386,8 +418,7 @@ def table_to_dict(table: str | ET.Element, indexs: list[str] = None,
             try:
                 output[label].append(columns[i].text)
             except IndexError:
-                if verbose:
-                    print("Not Enough Data at Row")
+                print_verbose(verbose, 2)
 
     return output
 
@@ -458,48 +489,23 @@ def parse_data(data: dict, weeks: list) -> dict:
 
 # Utils for exporting
 class ScheduleData(defaultdict):
-    def __init__(self, subject: list, start_date: list,
-                 start_time: list = [],
-                 end_date: list = [], end_time: list = [],
-                 all_day_event: list = [], description: list = [],
-                 location: list = [], private_event: list = []):
+    """Object that holds all the data of a Schedule."""
+    def __init__(self):
         super().__init__(list)
-
-        # Ensuring equal length
-        if len(subject) != len(start_date):
-            raise ValueError("subject and start_date must be the same length")
+        key_list = ["Subject", "Start Date", "Start Time", "End Date",
+                    "End Time", "All Day Event", "Description", "Location"]
 
         # Storing Variables
-        # https://support.google.com/calendar/answer/37118?hl=en&co=GENIE.Platform%3DDesktop
-        self["Subject"] = subject
-        self["Start Date"] = start_date
-        self["Start Time"] = start_time
-        self["End Date"] = end_date
-        self["End Time"] = end_time
-        self["All Day Event"] = all_day_event
-        self["Description"] = description
-        self["Location"]: list = location
+        for key in key_list:
+            super().__setitem__(key, [])
 
-        # Adding Dummy Values
-        for key in self:
-            if key == "Subject" or key == "Start Date":
-                continue
-
-            items = self[key]
-            while len(items) < len(self["Subject"]):
-                items.append(None)
-
-        # Sorting Keys
-        # Making a copy of need values
-        self.__sorting_indexs = [
+        # Setting up some needed variables
+        self.__current_index = 0
+        self._sorting_keys = [
             self["Start Date"].copy(),
             self["Start Time"].copy(),
             self["Subject"].copy()
         ]
-        # Looping over all values
-        for items in self.values():
-            self.__current_index = 0
-            items.sort(key=self.__sort_indexs)
 
     def export_csv(self, output: str = "output.csv") -> list[list]:
         """Exports the timetable in a csv format.
@@ -514,10 +520,13 @@ class ScheduleData(defaultdict):
         list[list]
             A list of all the rows containg all the csv data
         """
+        # Sorting Values
+        self._sort_values()
+
         output_value = []
 
-        with open(output, "w") as f:
-            writer = csv.writer(f)
+        with open(output, "w", encoding="utf-8") as file:
+            writer = csv.writer(file)
             # Adding Label Row
             output_value.append([
                 "Subject", "Start Date", "Start Time", "End Date", "End Time",
@@ -527,10 +536,14 @@ class ScheduleData(defaultdict):
             # Looping over all values
             for i in range(len(self["Subject"])):
                 output_value.append([
-                    self["Subject"][i], self["Start Date"][i],
-                    self["Start Time"][i], self["End Date"][i],
-                    self["End Time"][i], self["All Day Event"][i],
-                    self["Description"][i], self["Location"][i]
+                    self._get_value("Subject", i),
+                    self._get_value("Start Date", i),
+                    self._get_value("Start Time", i),
+                    self._get_value("End Date", i),
+                    self._get_value("End Time", i),
+                    self._get_value("All Day Event", i),
+                    self._get_value("Description", i),
+                    self._get_value("Location", i)
                 ])
 
             # Writting Values
@@ -538,7 +551,7 @@ class ScheduleData(defaultdict):
 
         return output_value
 
-    def export_ical(self, output: str = "output.ics"):
+    def export_ical(self, output: str = "output.ics") -> iCalendar:
         """Exports the timetable in a iCalander format.
         The format is compatible with
         RCF 5545 see link below for more information:
@@ -549,34 +562,45 @@ class ScheduleData(defaultdict):
         output: str
             Output file name
         """
+        # Sorting Values
+        self._sort_values()
+
+        # Creating Calendar Component
         cal = iCalendar()
         cal.add("version", "2.0")
         cal.add("prodid", "-//nott-your-timetable//Nottingham Schedule/EN")
 
+        # Creating all the Event Components
         for i in range(len(self["Subject"])):
             event = iEvent()
 
             # Ignoing time if is is all day event
-            if self["All Day Event"][i] is not None:
-                dtstart = self["Start Date"][i]
-                dtend = self["End Date"][i]
+            if self._get_value("All Day Event", i) is not None:
+                dtstart = self._get_value("Start Date", i)
+                dtend = self._get_value("End Date", i)
             else:
-                dtstart = datetime.datetime.combine(self["Start Date"][i],
-                                                    self["Start Time"][i])
-                dtend = datetime.datetime.combine(self["Start Date"][i],
-                                                  self["End Time"][i])
+                dtstart = datetime.datetime.combine(
+                    self._get_value("Start Date", i),
+                    self._get_value("Start Time", i)
+                )
+                dtend = datetime.datetime.combine(
+                    self._get_value("Start Date", i),
+                    self._get_value("End Time", i)
+                )
 
             event.add("dtstamp", datetime.datetime.now())
             event.add("uid", self.__get_uid(i))
             event.add("dtstart", dtstart)
             event.add("dtend", dtend)
-            event.add("summary", self["Subject"][i])
-            event.add("location", self["Location"][i])
+            event.add("summary", self._get_value("Subject", i))
+            event.add("location", self._get_value("Location", i))
 
             cal.add_component(event)
 
-        with open(output, "wb") as f:
-            f.write(cal.to_ical())
+        with open(output, "wb") as file:
+            file.write(cal.to_ical())
+
+        return cal
 
     def export_vcard(self, output: str = "output.vcard"):
         """Exports the timetable in a vCard format.
@@ -586,9 +610,43 @@ class ScheduleData(defaultdict):
         output: str
             Output file name
         """
-        ...
+        # Sorting Values
+        self._sort_values()
+        with open(output, "w", encoding="utf-8") as file:
+            file.write("WIP")
 
-    def __sort_indexs(self, index: Any) -> list:
+    def export(self, export_format: str, output: str) -> int:
+        """Exports the data to a given format.
+
+        Parameters
+        ----------
+        export_format: str
+            The format to export in.
+            It can be [ics, vcard (WIP), csv]
+        output: str
+            Output filename
+
+        Returns
+        -------
+        int
+            0 if successful
+            1 if unsuccessful (e.g. invalid format)
+        """
+        # Sorting Values
+        self._sort_values()
+
+        if export_format == "csv":
+            self.export_csv(output)
+        elif export_format == "ics":
+            self.export_ical(output)
+        else:
+            # Probably not gonna happen but added for redundancy
+            print("Invalid Format", file=sys.stderr)
+            return 1
+
+        return 0
+
+    def __get_sort_values(self, index: Any) -> list:
         """Returns the key such that the lists would be sorted based on
         Start Date -> Start Time (if used) -> Subject.
 
@@ -603,19 +661,107 @@ class ScheduleData(defaultdict):
             A list to be sorted by
         """
         index: int = self.__current_index
-        data = [
-            self.__sorting_indexs[0][index],
-            self.__sorting_indexs[1][index],
-            self.__sorting_indexs[2][index]
-        ]
+        data = []
+        for i in self._sorting_keys:
+            try:
+                data.append(i[index])
+            except IndexError:
+                data.append("")
         self.__current_index += 1
         return data
 
     def __get_uid(self, index: int) -> str:
-        """Gets a UID forr an event."""
-        date = self["Start Date"][index]
-        subject = self["Subject"][index]
-        start = self["Start Time"][index]
-        end = self["End Time"][index]
+        """Gets a UID forr an event.
+
+        Parameters
+        ----------
+        index: int
+            The index of the event
+        """
+        date = self._get_value("Start Date", index)
+        subject = self._get_value("Subject", index)
+        start = self._get_value("Start Time", index)
+        end = self._get_value("End Time", index)
 
         return f"{date}-{subject}-{start}-{end}"
+
+    def add(self, key: str, value: Any) -> None:
+        """Adds the value to the specific key.
+
+        Paramters
+        ---------
+        key: str
+            The key of the value to set
+        value: Any
+            Value to add to the list
+        """
+        if key not in self.keys():
+            raise ValueError(f"{key} is not a valid key.")
+
+        self[key].append(value)
+
+    def set(self, key: str, value: Iterable) -> None:
+        """Replace the value of the specific key to the given value.
+
+        Paramters
+        ---------
+        key: str
+            The key of the value to set
+        value: Iterable
+            Iterable to set to
+        """
+        if key not in self.keys():
+            raise ValueError(f"{key} is not a valid key.")
+
+        if not isinstance(value, Iterable):
+            raise ValueError("Value is not an iterable")
+
+        super().__setitem__(key, list(value))
+
+    def __setitem__(self, key: Any, value: Any) -> NoReturn:
+        """Raises TypeError when doing self[key] = value.
+        Use self.set or self.add instead.
+        """
+        raise TypeError("Use set/add instead to set values")
+
+    def _sort_values(self, sorting_keys: list[Any] = None) -> None:
+        """Sort all the value
+
+        Parameters
+        ----------
+        sorting_keys: list[Any]
+            The keys to sort by
+            Defaults is "Start Date" -> "Start Time" -> "Subject"
+        """
+        # Sorting Keys
+        # Making a copy of need values
+        self._sorting_keys = []
+        if sorting_keys is None:
+            self._sorting_keys.append(self["Start Date"].copy())
+            self._sorting_keys.append(self["Start Time"].copy())
+            self._sorting_keys.append(self["Subject"].copy())
+        else:
+            for item in sorting_keys:
+                self._sorting_keys.append(self[item].copy())
+        # Looping over all values
+        for items in self.values():
+            self.__current_index = 0
+            items.sort(key=self.__get_sort_values)
+
+    def _get_value(self, key: str, index: int) -> Any:
+        """Gets the event data of the key at the index.
+        None will be returned if the index is out of range.
+
+        Parameters
+        ----------
+        key: str
+            The key of the value to get
+        index: int
+            The index the event
+        """
+        try:
+            return self[key][index]
+        except IndexError:
+            return None
+        except TypeError as err:
+            raise ValueError("Invalid Key") from err
