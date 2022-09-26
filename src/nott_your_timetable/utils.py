@@ -16,6 +16,7 @@ from typing import Any
 from icalendar import Calendar as iCalendar
 from icalendar import Event as iEvent
 from collections.abc import Iterable
+from typing import NoReturn
 
 
 # Other Utils
@@ -533,7 +534,7 @@ class ScheduleData(defaultdict):
 
         return output_value
 
-    def export_ical(self, output: str = "output.ics"):
+    def export_ical(self, output: str = "output.ics") -> iCalendar:
         """Exports the timetable in a iCalander format.
         The format is compatible with
         RCF 5545 see link below for more information:
@@ -547,10 +548,12 @@ class ScheduleData(defaultdict):
         # Sorting Values
         self._sort_values()
 
+        # Creating Calendar Component
         cal = iCalendar()
         cal.add("version", "2.0")
         cal.add("prodid", "-//nott-your-timetable//Nottingham Schedule/EN")
 
+        # Creating all the Event Components
         for i in range(len(self["Subject"])):
             event = iEvent()
 
@@ -649,7 +652,13 @@ class ScheduleData(defaultdict):
         return data
 
     def __get_uid(self, index: int) -> str:
-        """Gets a UID forr an event."""
+        """Gets a UID forr an event.
+
+        Parameters
+        ----------
+        index: int
+            The index of the event
+        """
         date = self._get_value("Start Date", index)
         subject = self._get_value("Subject", index)
         start = self._get_value("Start Time", index)
@@ -691,7 +700,7 @@ class ScheduleData(defaultdict):
         super().__setitem__(key, list(value))
 
     def __setitem__(self, key: Any, value: Any) -> NoReturn:
-        """Raises ValueError when doing self[key] = value.
+        """Raises TypeError when doing self[key] = value.
         Use self.set or self.add instead.
         """
         raise TypeError("Use set/add instead to set values")
@@ -721,7 +730,7 @@ class ScheduleData(defaultdict):
             items.sort(key=self.__get_sort_values)
 
     def _get_value(self, key: str, index: int) -> Any:
-        """Gets the value of the key at the index.
+        """Gets the event data of the key at the index.
         None will be returned if the index is out of range.
 
         Parameters
@@ -729,7 +738,7 @@ class ScheduleData(defaultdict):
         key: str
             The key of the value to get
         index: int
-            The index to get
+            The index the event
         """
         try:
             return self[key][index]
