@@ -70,3 +70,12 @@ nott-your-timetable -h
   * [ ] Add Export Options
   * [x] Add better help descriptions
   * [ ] Support for mutiple program selection
+  * [ ] Add binaries
+    * [ ] EXE (Windows)
+    * [ ] Application (MacOS)
+    * [ ] Appimage (Linux)
+    * [ ] PKGBUILD (AUR/Arch)
+    * [ ] DEB (Debian)
+    * [ ] RPM (Red Hat)
+    * [ ] Flatpak (Linux) (Maybe?)
+    * [ ] Snaps (Linux) (Maybe?)
