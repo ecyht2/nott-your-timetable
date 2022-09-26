@@ -489,6 +489,14 @@ class ScheduleData(defaultdict):
         for key in key_list:
             super().__setitem__(key, [])
 
+        # Setting up some needed variables
+        self.__current_index = 0
+        self._sorting_keys = [
+            self["Start Date"].copy(),
+            self["Start Time"].copy(),
+            self["Subject"].copy()
+        ]
+
     def export_csv(self, output: str = "output.csv") -> list[list]:
         """Exports the timetable in a csv format.
 
