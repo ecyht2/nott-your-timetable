@@ -518,10 +518,14 @@ class ScheduleData(defaultdict):
             # Looping over all values
             for i in range(len(self["Subject"])):
                 output_value.append([
-                    self["Subject"][i], self["Start Date"][i],
-                    self["Start Time"][i], self["End Date"][i],
-                    self["End Time"][i], self["All Day Event"][i],
-                    self["Description"][i], self["Location"][i]
+                    self._get_value("Subject", i),
+                    self._get_value("Start Date", i),
+                    self._get_value("Start Time", i),
+                    self._get_value("End Date", i),
+                    self._get_value("End Time", i),
+                    self._get_value("All Day Event", i),
+                    self._get_value("Description", i),
+                    self._get_value("Location", i)
                 ])
 
             # Writting Values
@@ -551,21 +555,25 @@ class ScheduleData(defaultdict):
             event = iEvent()
 
             # Ignoing time if is is all day event
-            if self["All Day Event"][i] is not None:
-                dtstart = self["Start Date"][i]
-                dtend = self["End Date"][i]
+            if self._get_value("All Day Event", i) is not None:
+                dtstart = self._get_value("Start Date", i)
+                dtend = self._get_value("End Date", i)
             else:
-                dtstart = datetime.datetime.combine(self["Start Date"][i],
-                                                    self["Start Time"][i])
-                dtend = datetime.datetime.combine(self["Start Date"][i],
-                                                  self["End Time"][i])
+                dtstart = datetime.datetime.combine(
+                    self._get_value("Start Date", i),
+                    self._get_value("Start Time", i)
+                )
+                dtend = datetime.datetime.combine(
+                    self._get_value("Start Date", i),
+                    self._get_value("End Time", i)
+                )
 
             event.add("dtstamp", datetime.datetime.now())
             event.add("uid", self.__get_uid(i))
             event.add("dtstart", dtstart)
             event.add("dtend", dtend)
-            event.add("summary", self["Subject"][i])
-            event.add("location", self["Location"][i])
+            event.add("summary", self._get_value("Subject", i))
+            event.add("location", self._get_value("Location", i))
 
             cal.add_component(event)
 
@@ -642,10 +650,10 @@ class ScheduleData(defaultdict):
 
     def __get_uid(self, index: int) -> str:
         """Gets a UID forr an event."""
-        date = self["Start Date"][index]
-        subject = self["Subject"][index]
-        start = self["Start Time"][index]
-        end = self["End Time"][index]
+        date = self._get_value("Start Date", index)
+        subject = self._get_value("Subject", index)
+        start = self._get_value("Start Time", index)
+        end = self._get_value("End Time", index)
 
         return f"{date}-{subject}-{start}-{end}"
 
@@ -711,3 +719,21 @@ class ScheduleData(defaultdict):
         for items in self.values():
             self.__current_index = 0
             items.sort(key=self.__get_sort_values)
+
+    def _get_value(self, key: str, index: int) -> Any:
+        """Gets the value of the key at the index.
+        None will be returned if the index is out of range.
+
+        Parameters
+        ----------
+        key: str
+            The key of the value to get
+        index: int
+            The index to get
+        """
+        try:
+            return self[key][index]
+        except IndexError:
+            return None
+        except TypeError as err:
+            raise ValueError("Invalid Key") from err
