@@ -12,11 +12,10 @@ from string import whitespace
 import json
 from importlib.resources import files
 from collections import defaultdict
-from typing import Any
+from collections.abc import Iterable
+from typing import Any, NoReturn
 from icalendar import Calendar as iCalendar
 from icalendar import Event as iEvent
-from collections.abc import Iterable
-from typing import NoReturn
 
 
 # Other Utils
