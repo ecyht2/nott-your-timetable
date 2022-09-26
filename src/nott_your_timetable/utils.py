@@ -583,6 +583,8 @@ class ScheduleData(defaultdict):
         with open(output, "wb") as file:
             file.write(cal.to_ical())
 
+        return cal
+
     def export_vcard(self, output: str = "output.vcard"):
         """Exports the timetable in a vCard format.
 
