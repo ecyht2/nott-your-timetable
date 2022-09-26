@@ -694,7 +694,7 @@ class ScheduleData(defaultdict):
         """Raises ValueError when doing self[key] = value.
         Use self.set or self.add instead.
         """
-        raise ValueError("Use set/add instead to set values")
+        raise TypeError("Use set/add instead to set values")
 
     def _sort_values(self, sorting_keys: list[Any] = None) -> None:
         """Sort all the value
