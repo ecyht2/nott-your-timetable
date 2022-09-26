@@ -15,6 +15,7 @@ from collections import defaultdict
 from typing import Any
 from icalendar import Calendar as iCalendar
 from icalendar import Event as iEvent
+from collections.abc import Iterable
 
 
 # Other Utils
@@ -479,48 +480,14 @@ def parse_data(data: dict, weeks: list) -> dict:
 # Utils for exporting
 class ScheduleData(defaultdict):
     """Object that holds all the data of a Schedule."""
-    def __init__(self, subject: list, start_date: list,
-                 start_time: list = [],
-                 end_date: list = [], end_time: list = [],
-                 all_day_event: list = [], description: list = [],
-                 location: list = [], private_event: list = []):
+    def __init__(self):
         super().__init__(list)
-
-        # Ensuring equal length
-        if len(subject) != len(start_date):
-            raise ValueError("subject and start_date must be the same length")
+        key_list = ["Subject", "Start Date", "Start Time", "End Date",
+                    "End Time", "All Day Event", "Description", "Location"]
 
         # Storing Variables
-        # https://support.google.com/calendar/answer/37118?hl=en&co=GENIE.Platform%3DDesktop
-        self["Subject"]: list = subject
-        self["Start Date"]: list = start_date
-        self["Start Time"]: list = start_time
-        self["End Date"]: list = end_date
-        self["End Time"]: list = end_time
-        self["All Day Event"]: list = all_day_event
-        self["Description"]: list = description
-        self["Location"]: list = location
-
-        # Adding Dummy Values
-        for key in self:
-            if key in ("Subject", "Start Date"):
-                continue
-
-            items = self[key]
-            while len(items) < len(self["Subject"]):
-                items.append(None)
-
-        # Sorting Keys
-        # Making a copy of need values
-        self.__sorting_indexs = [
-            self["Start Date"].copy(),
-            self["Start Time"].copy(),
-            self["Subject"].copy()
-        ]
-        # Looping over all values
-        for items in self.values():
-            self.__current_index = 0
-            items.sort(key=self.__sort_indexs)
+        for key in key_list:
+            super().__setitem__(key, [])
 
     def export_csv(self, output: str = "output.csv") -> list[list]:
         """Exports the timetable in a csv format.
@@ -669,3 +636,42 @@ class ScheduleData(defaultdict):
         end = self["End Time"][index]
 
         return f"{date}-{subject}-{start}-{end}"
+
+    def add(self, key: str, value: Any) -> None:
+        """Adds the value to the specific key.
+
+        Paramters
+        ---------
+        key: str
+            The key of the value to set
+        value: Any
+            Value to add to the list
+        """
+        if key not in self.keys():
+            raise ValueError(f"{key} is not a valid key.")
+
+        self[key].append(value)
+
+    def set(self, key: str, value: Iterable) -> None:
+        """Replace the value of the specific key to the given value.
+
+        Paramters
+        ---------
+        key: str
+            The key of the value to set
+        value: Iterable
+            Iterable to set to
+        """
+        if key not in self.keys():
+            raise ValueError(f"{key} is not a valid key.")
+
+        if not isinstance(value, Iterable):
+            raise ValueError("Value is not an iterable")
+
+        super().__setitem__(key, list(value))
+
+    def __setitem__(self, key: Any, value: Any) -> NoReturn:
+        """Raises ValueError when doing self[key] = value.
+        Use self.set or self.add instead.
+        """
+        raise ValueError("Use set/add instead to set values")

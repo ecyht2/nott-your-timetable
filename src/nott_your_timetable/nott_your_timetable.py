@@ -70,9 +70,11 @@ height=100&week=100"
         data[key] = table_to_dict(value, verbose=False)
 
     parsed_data = parse_data(data, weeks)
-    schedule_data = ScheduleData(parsed_data["Module"], parsed_data["Date"],
-                                 start_time=parsed_data["Start"],
-                                 end_time=parsed_data["End"],
-                                 location=parsed_data["Room"])
+    schedule_data = ScheduleData()
+    schedule_data.set("Subject", parsed_data["Module"])
+    schedule_data.set("Start Date", parsed_data["Date"])
+    schedule_data.set("Start Time", parsed_data["Start"])
+    schedule_data.set("End Time", parsed_data["End"])
+    schedule_data.set("Location", parsed_data["Room"])
 
     return schedule_data.export(args.format, args.output)
