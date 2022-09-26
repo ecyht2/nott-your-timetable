@@ -502,6 +502,9 @@ class ScheduleData(defaultdict):
         list[list]
             A list of all the rows containg all the csv data
         """
+        # Sorting Values
+        self._sort_values()
+
         output_value = []
 
         with open(output, "w", encoding="utf-8") as file:
@@ -537,6 +540,9 @@ class ScheduleData(defaultdict):
         output: str
             Output file name
         """
+        # Sorting Values
+        self._sort_values()
+
         cal = iCalendar()
         cal.add("version", "2.0")
         cal.add("prodid", "-//nott-your-timetable//Nottingham Schedule/EN")
@@ -574,6 +580,8 @@ class ScheduleData(defaultdict):
         output: str
             Output file name
         """
+        # Sorting Values
+        self._sort_values()
         with open(output, "w", encoding="utf-8") as file:
             file.write("WIP")
 
@@ -594,6 +602,9 @@ class ScheduleData(defaultdict):
             0 if successful
             1 if unsuccessful (e.g. invalid format)
         """
+        # Sorting Values
+        self._sort_values()
+
         if export_format == "csv":
             self.export_csv(output)
         elif export_format == "ics":
@@ -605,7 +616,7 @@ class ScheduleData(defaultdict):
 
         return 0
 
-    def __sort_indexs(self, index: Any) -> list:
+    def __get_sort_values(self, index: Any) -> list:
         """Returns the key such that the lists would be sorted based on
         Start Date -> Start Time (if used) -> Subject.
 
@@ -620,11 +631,12 @@ class ScheduleData(defaultdict):
             A list to be sorted by
         """
         index: int = self.__current_index
-        data = [
-            self.__sorting_indexs[0][index],
-            self.__sorting_indexs[1][index],
-            self.__sorting_indexs[2][index]
-        ]
+        data = []
+        for i in self._sorting_keys:
+            try:
+                data.append(i[index])
+            except IndexError:
+                data.append("")
         self.__current_index += 1
         return data
 
@@ -675,3 +687,27 @@ class ScheduleData(defaultdict):
         Use self.set or self.add instead.
         """
         raise ValueError("Use set/add instead to set values")
+
+    def _sort_values(self, sorting_keys: list[Any] = None) -> None:
+        """Sort all the value
+
+        Parameters
+        ----------
+        sorting_keys: list[Any]
+            The keys to sort by
+            Defaults is "Start Date" -> "Start Time" -> "Subject"
+        """
+        # Sorting Keys
+        # Making a copy of need values
+        self._sorting_keys = []
+        if sorting_keys is None:
+            self._sorting_keys.append(self["Start Date"].copy())
+            self._sorting_keys.append(self["Start Time"].copy())
+            self._sorting_keys.append(self["Subject"].copy())
+        else:
+            for item in sorting_keys:
+                self._sorting_keys.append(self[item].copy())
+        # Looping over all values
+        for items in self.values():
+            self.__current_index = 0
+            items.sort(key=self.__get_sort_values)
