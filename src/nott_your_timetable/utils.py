@@ -366,6 +366,19 @@ def table_to_dict(table: str | ET.Element, indexs: list[str] = None,
     ----
     Handle Uneven Spaces
     """
+    # Setting Up function to print verbose statments
+    def print_verbose(verbosity: bool, print_index: int):
+        if not verbosity:
+            return
+
+        match print_index:
+            case 0:
+                print("No Data in table")
+            case 1:
+                print("No Indexs Provided, Using first row as index")
+            case 2:
+                print("Not Enough Data at Row")
+
     # Getting Element Tree
     if isinstance(table, ET.Element):
         data: ET.Element = table
@@ -374,15 +387,13 @@ def table_to_dict(table: str | ET.Element, indexs: list[str] = None,
 
     # Returning None if there isn't any data in table
     if data.find("tr") is None:
-        if verbose:
-            print("No Data in table")
+        print_verbose(verbose, 0)
         return None
 
     # Setting indexes/label used for the csv
     indexed = False
     if indexs is None:
-        if verbose:
-            print("No Indexs Provided, Using first row as index")
+        print_verbose(verbose, 1)
 
         indexs = []
         for col in data.findall("tr")[0].findall("td"):
@@ -407,8 +418,7 @@ def table_to_dict(table: str | ET.Element, indexs: list[str] = None,
             try:
                 output[label].append(columns[i].text)
             except IndexError:
-                if verbose:
-                    print("Not Enough Data at Row")
+                print_verbose(verbose, 2)
 
     return output
 
