@@ -635,14 +635,15 @@ class ScheduleData(defaultdict):
         # Sorting Values
         self._sort_values()
 
-        if export_format == "csv":
-            self.export_csv(output)
-        elif export_format == "ics":
-            self.export_ical(output)
-        else:
-            # Probably not gonna happen but added for redundancy
-            print("Invalid Format", file=sys.stderr)
-            return 1
+        match export_format:
+            case "csv":
+                self.export_csv(output)
+            case "ics":
+                self.export_ical(output)
+            case _:
+                # Probably not gonna happen but added for redundancy
+                print("Invalid Format", file=sys.stderr)
+                return 1
 
         return 0
 
