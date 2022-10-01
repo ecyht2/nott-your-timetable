@@ -2,6 +2,7 @@
 """CLI related functions."""
 import argparse
 from .utils import get_data, find_current_week_nott
+from .__init__ import __version__
 
 
 def parse_arguments():
@@ -79,6 +80,10 @@ def parse_arguments():
     course_group.add_argument("-i", "--interactive", action="store_true",
                               help="Specify which School/Division and"
                               " Program to export using standard input")
+
+    # Version
+    parser.add_argument('-v', '--version', action="version",
+                        version=f"%(prog)s {__version__}")
 
     return parser.parse_args()
 
