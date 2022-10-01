@@ -14,6 +14,7 @@ from importlib.resources import files
 from collections import defaultdict
 from collections.abc import Iterable
 from typing import Any, NoReturn
+import io
 from icalendar import Calendar as iCalendar
 from icalendar import Event as iEvent
 
@@ -525,29 +526,31 @@ class ScheduleData(defaultdict):
 
         output_value = []
 
-        with open(output, "w", encoding="utf-8") as file:
-            writer = csv.writer(file)
-            # Adding Label Row
+        csv_output = io.StringIO()
+        writer = csv.writer(csv_output)
+        # Adding Label Row
+        output_value.append([
+            "Subject", "Start Date", "Start Time", "End Date", "End Time",
+            "All Day Event", "Description", "Location"
+        ])
+
+        # Looping over all values
+        for i in range(len(self["Subject"])):
             output_value.append([
-                "Subject", "Start Date", "Start Time", "End Date", "End Time",
-                "All Day Event", "Description", "Location"
+                self._get_value("Subject", i),
+                self._get_value("Start Date", i),
+                self._get_value("Start Time", i),
+                self._get_value("End Date", i),
+                self._get_value("End Time", i),
+                self._get_value("All Day Event", i),
+                self._get_value("Description", i),
+                self._get_value("Location", i)
             ])
 
-            # Looping over all values
-            for i in range(len(self["Subject"])):
-                output_value.append([
-                    self._get_value("Subject", i),
-                    self._get_value("Start Date", i),
-                    self._get_value("Start Time", i),
-                    self._get_value("End Date", i),
-                    self._get_value("End Time", i),
-                    self._get_value("All Day Event", i),
-                    self._get_value("Description", i),
-                    self._get_value("Location", i)
-                ])
+        # Writting Values
+        writer.writerows(output_value)
 
-            # Writting Values
-            writer.writerows(output_value)
+        self._write_file(csv_output.getvalue(), output)
 
         return output_value
 
@@ -597,8 +600,7 @@ class ScheduleData(defaultdict):
 
             cal.add_component(event)
 
-        with open(output, "wb") as file:
-            file.write(cal.to_ical())
+        self._write_file(cal.to_ical().decode("utf-8"), output)
 
         return cal
 
@@ -612,8 +614,7 @@ class ScheduleData(defaultdict):
         """
         # Sorting Values
         self._sort_values()
-        with open(output, "w", encoding="utf-8") as file:
-            file.write("WIP")
+        self._write_file("WIP", output)
 
     def export(self, export_format: str, output: str) -> int:
         """Exports the data to a given format.
@@ -646,6 +647,24 @@ class ScheduleData(defaultdict):
                 return 1
 
         return 0
+
+    def _write_file(self, data: str, output: str = None) -> None:
+        """Writes the data into a file.
+
+        Parameters
+        ----------
+        data: str
+            The data to write
+        output: str | None
+            The output filename
+            If None is provided, it will be written to stdout
+        """
+        if output is None:
+            print(data)
+        else:
+            with open(output, "w", encoding="utf-8") as file:
+                file.write(data)
+                print(f"Data Exported to {output}")
 
     def __get_sort_values(self, index: Any) -> list:
         """Returns the key such that the lists would be sorted based on
