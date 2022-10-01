@@ -23,8 +23,8 @@ def main_cli():
         return 1
 
     # Using default output filename
-    if args.output is None:
-        args.output = "output." + args.format
+    if args.output is not None:
+        args.output += f".{args.format}"
 
     # If today is specified
     if args.today:
