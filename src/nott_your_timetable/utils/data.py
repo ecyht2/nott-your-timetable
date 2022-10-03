@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Alias functions to fetch all the data needed."""
 import json
 from importlib.resources import files
 from .weeks import find_current_week_nott
@@ -25,6 +26,13 @@ def get_data() -> tuple[dict, dict]:
 
 
 def get_convinience_weeks() -> dict[str, str]:
+    """Gets All the Convience Weeks ranges.
+
+    Returns
+    -------
+    dict[str, str]
+        The Convinience Weeks and it's ranges
+    """
     output = {
         "All Year": "1-52",
         "Autumn": "4-15",
@@ -38,6 +46,13 @@ def get_convinience_weeks() -> dict[str, str]:
 
 
 def get_convinience_days() -> dict[str, str]:
+    """Gets All the Convience Days ranges.
+
+    Returns
+    -------
+    dict[str, str]
+        The Convinience Days and it's ranges
+    """
     output = {
         "Weekdays": "1-5",
         "All Week": "1-7",

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Functions to do calendar related calculations."""
 from calendar import Calendar
 import datetime
 from .enums import DayOfWeek

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Functions that handles ranges encoded in strings e.g. 1, 2, 5-10"""
 from string import whitespace
 from .enums import DayOfWeekISO
 
