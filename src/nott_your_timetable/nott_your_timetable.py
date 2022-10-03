@@ -3,9 +3,10 @@
 import sys
 import datetime
 import requests
-from .utils import (ScheduleParser, table_to_dict, handle_ranges, parse_data,
-                    handle_ranges_days, get_program_value, ScheduleData,
-                    find_current_week_nott)
+from .utils.range_handlers import handle_ranges_days, handle_ranges
+from .utils.weeks import find_current_week_nott
+from .utils.parsers import (get_program_value, parse_data, ScheduleData,
+                            ScheduleParser, table_to_dict)
 from .cli import get_school_interactive, parse_arguments
 
 

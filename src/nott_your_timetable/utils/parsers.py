@@ -4,123 +4,21 @@ import sys
 from xml.etree import ElementTree as ET
 from html.parser import HTMLParser
 import html
-from enum import Enum
-from calendar import Calendar
 import datetime
 import csv
-from string import whitespace
 from collections import defaultdict
 from collections.abc import Iterable
 from typing import Any, NoReturn
 import io
-from .constants import get_data
 from icalendar import Calendar as iCalendar
 from icalendar import Event as iEvent
+from .data import get_data
+from .enums import DayOfWeekISO, DayOfWeek
+from .weeks import find_week1
+from .range_handlers import handle_ranges
 
 
 # Other Utils
-def handle_ranges(value: str) -> list[int]:
-    """Converts integers splitted by ',' into a list.
-    A range of value can be added by using '-'.
-
-    Parameters
-    ----------
-    value: str
-        The integers to convert
-
-    Returns
-    -------
-    list[int]
-        The list of integers
-    """
-    # Removing white spaces
-    for space in whitespace:
-        value = value.replace(space, '')
-
-    # Splitting all commas
-    splitted = value.split(',')
-
-    output = []
-    for i in splitted:
-        # Adding all values encoded in -
-        if '-' in i:
-            range_split = i.split('-')
-            try:
-                range_split[0] = int(range_split[0])
-                range_split[1] = int(range_split[1])
-                range_split.sort()
-                for j in range(range_split[0], range_split[1] + 1):
-                    output.append(j)
-            except ValueError as err:
-                raise ValueError("Invalid Range, Please Check Inserted Value")\
-                    from err
-        # Adding normal values
-        else:
-            try:
-                output.append(int(i))
-            except ValueError as err:
-                raise ValueError("Invalid Range, Please Check Inserted Value")\
-                    from err
-
-    # Sorting Output
-    output.sort()
-    return output
-
-
-def handle_ranges_days(value: str) -> list[int]:
-    """Converts integers splitted by ',' into a list.
-    A range of value can be added by using '-'.
-    This is simillar to handle_ranges but adds supports for
-    text like Mon-Fri
-
-    Parameters
-    ----------
-    value: str
-        The data to convert
-
-    Returns
-    -------
-    list[int]
-        The list of integers
-    """
-    # Removing white spaces
-    for space in whitespace:
-        value = value.replace(space, '')
-
-    # Splitting all commas
-    splitted = value.split(',')
-
-    output = []
-    for i in splitted:
-        # Adding all values encoded in -
-        if '-' in i:
-            range_split = i.split('-')
-            try:
-                try:
-                    range_split[0] = DayOfWeekISO[range_split[0]].value
-                    range_split[1] = DayOfWeekISO[range_split[1]].value
-                except KeyError:
-                    range_split[0] = int(range_split[0])
-                    range_split[1] = int(range_split[1])
-                range_split.sort()
-                for j in range(range_split[0], range_split[1] + 1):
-                    output.append(j)
-            except ValueError as err:
-                raise ValueError("Invalid Range, Please Check Inserted Value")\
-                    from err
-        # Adding normal values
-        else:
-            try:
-                output.append(int(i))
-            except ValueError as err:
-                raise ValueError("Invalid Range, Please Check Inserted Value")\
-                    from err
-
-    # Sorting Output
-    output.sort()
-    return output
-
-
 def get_program_value(school: str, program: str) -> str:
     """Gets the value of the program.
 
@@ -149,120 +47,7 @@ def get_program_value(school: str, program: str) -> str:
     return program_value
 
 
-def find_first_day(day: int | str, year: int, month: int,
-                   iso: bool = False) -> int:
-    """Finds the first day of week of a given month and year.
-
-    Parameters
-    ----------
-    day: int | str
-        The day of week to find
-    year: int
-        The year of interest
-    month: int
-        The month of interest
-    iso: bool
-        Use the ISO the numbering system to use when specifying day of week
-        Can be ignored when day is given as a string
-
-    Returns
-    -------
-    int
-        They date of the month in which the first day of week appeared
-    """
-    cal: Calendar = Calendar()
-    weeks = cal.monthdayscalendar(year, month)
-
-    if isinstance(day, int):
-        day_index = day
-        if iso:
-            day -= 1
-    elif isinstance(day, str):
-        try:
-            day_index = DayOfWeek[day.title()].value
-        except KeyError as err:
-            raise ValueError("Invalid Day of Week") from err
-
-    day_number = 1
-    for week in weeks:
-        if week[day_index] > 0:
-            day_number = week[day_index]
-            break
-
-    return day_number
-
-
-def find_week1() -> datetime.date:
-    """Finds week 1 of the academic year.
-
-    Returns
-    -------
-    datetime.date
-        The date of the first week of september.
-    """
-    today: datetime.date = datetime.date.today()
-    if today.month < 9:
-        year: int = today.year - 1
-        day: int = find_first_day(0, year, 9)
-    else:
-        year: int = today.year
-        day: int = find_first_day(0, year, 9)
-
-    week1: datetime.date = datetime.date(year, 9, day)
-    return week1
-
-
-def find_current_week_nott() -> int:
-    """Finds the week number.
-
-    Returns
-    -------
-    int
-        The current week number.
-    """
-    diff = datetime.date.today() - find_week1()
-    return int(diff.days / 7) + 1
-
-
 # Utils for parsing data
-class DayOfWeek(Enum):
-    """Enumaration fo Day of Week."""
-    # pylint: disable=invalid-name
-    Monday = 0
-    Mon = 0
-    Tuesday = 1
-    Tue = 1
-    Wednesday = 2
-    Wed = 2
-    Thursday = 3
-    Thu = 3
-    Friday = 4
-    Fri = 4
-    Saturday = 5
-    Sat = 5
-    Sunday = 6
-    Sun = 6
-
-
-class DayOfWeekISO(Enum):
-    """Enumaration fo Day of Week using ISO format."""
-    # pylint: disable=invalid-name
-    Monday = 1
-    Mon = 1
-    Tuesday = 2
-    Tue = 2
-    Wednesday = 3
-    Wed = 3
-    Thursday = 4
-    Thu = 4
-    Friday = 5
-    Fri = 5
-    Saturday = 6
-    Sat = 6
-    Sunday = 7
-    Sun = 7
-
-
 class ScheduleParser(HTMLParser):
     """HTML Parser used to parse all the tables
 

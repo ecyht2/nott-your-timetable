@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import json
 from importlib.resources import files
-from .utils import find_current_week_nott
+from .weeks import find_current_week_nott
 
 
 def get_data() -> tuple[dict, dict]:
