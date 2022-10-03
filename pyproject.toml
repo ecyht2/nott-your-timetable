@@ -27,4 +27,4 @@ nott-your-timetable = "nott_your_timetable.nott_your_timetable:main_cli"
 version = { attr = "nott_your_timetable.__version__" }
 
 [tool.setuptools.package-data]
-"mypkg.data" = ["*.json"]
+"nott_your_timetable.data" = ["*.json"]
