@@ -8,6 +8,7 @@ from .utils.weeks import find_current_week_nott
 from .utils.parsers import (get_program_value, parse_data, ScheduleData,
                             ScheduleParser, table_to_dict)
 from .cli import get_school_interactive, parse_arguments
+from .gui import NottApp
 
 
 def main_cli():
@@ -79,3 +80,9 @@ height=100&week=100"
     schedule_data.set("Location", parsed_data["Room"])
 
     return schedule_data.export(args.format, args.output)
+
+
+def main_gui():
+    """GUI main function."""
+    app = NottApp()
+    return app.run()
