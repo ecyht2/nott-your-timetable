@@ -9,12 +9,11 @@ from calendar import Calendar
 import datetime
 import csv
 from string import whitespace
-import json
-from importlib.resources import files
 from collections import defaultdict
 from collections.abc import Iterable
 from typing import Any, NoReturn
 import io
+from .constants import get_data
 from icalendar import Calendar as iCalendar
 from icalendar import Event as iEvent
 
@@ -120,26 +119,6 @@ def handle_ranges_days(value: str) -> list[int]:
     # Sorting Output
     output.sort()
     return output
-
-
-def get_data() -> tuple[dict, dict]:
-    """Gets Department and program data from json files.
-
-    Returns
-    -------
-    tuple[dict, dict]
-        The data where the first one is the department data
-        and the second one is the program data.
-    """
-    data_path = files('nott_your_timetable.data')
-    with open(data_path.joinpath("dept.json"), "r", encoding="utf-8")\
-         as file:
-        dept_data: dict = json.load(file)
-    with open(data_path.joinpath("program.json"), "r", encoding="utf-8")\
-         as file:
-        program_data: dict = json.load(file)
-
-    return (dept_data, program_data)
 
 
 def get_program_value(school: str, program: str) -> str:
