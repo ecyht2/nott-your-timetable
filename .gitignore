@@ -1,5 +1,6 @@
 # Outputs
-output.*
+*.ics
+*.csv
 
 .DS_Store
 .idea
