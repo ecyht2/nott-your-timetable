@@ -5,8 +5,7 @@ import datetime
 import requests
 from .utils.range_handlers import handle_ranges_days, handle_ranges
 from .utils.weeks import find_current_week_nott
-from .utils.parsers import (get_program_value, parse_data, ScheduleData,
-                            ScheduleParser, table_to_dict)
+from .utils.parsers import get_program_value, make_request
 from .cli import get_school_interactive, parse_arguments
 from .gui import NottApp
 
@@ -51,33 +50,12 @@ def main_cli():
         print("Invalid School or Program", file=sys.stderr)
         return 1
 
-    link = f"http://timetablingunmc.nottingham.ac.uk:8016/reporting/\
-TextSpreadsheet;programme+of+study;id;{program_value}%0D%0A?\
-days=1-7&weeks=1-52&periods=3-20&template=SWSCUST+programme+of+study+TextSpreadsheet&\
-height=100&week=100"
-
     try:
-        response: requests.Response = requests.get(link, timeout=10)
+        schedule_data = make_request(program_value, days, weeks)
     except requests.ConnectTimeout:
         print("HTTP request taking too long, please check your internet"
               "connection", file=sys.stderr)
         return 1
-
-    parser = ScheduleParser(days)
-    parser.feed(response.text)
-    parser.close()
-
-    data = parser.tables.copy()
-    for key, value in parser.tables.items():
-        data[key] = table_to_dict(value, verbose=False)
-
-    parsed_data = parse_data(data, weeks)
-    schedule_data = ScheduleData()
-    schedule_data.set("Subject", parsed_data["Module"])
-    schedule_data.set("Start Date", parsed_data["Date"])
-    schedule_data.set("Start Time", parsed_data["Start"])
-    schedule_data.set("End Time", parsed_data["End"])
-    schedule_data.set("Location", parsed_data["Room"])
 
     return schedule_data.export(args.format, args.output)
 

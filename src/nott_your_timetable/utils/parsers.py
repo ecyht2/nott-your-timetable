@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Functions and Classes used by nott-your-timetable."""
 import sys
+import requests
 from xml.etree import ElementTree as ET
 from html.parser import HTMLParser
 import html
@@ -549,3 +550,70 @@ class ScheduleData(defaultdict):
             return None
         except TypeError as err:
             raise ValueError("Invalid Key") from err
+
+
+# Requester
+def make_request(program_value: str, days: list[int],
+                 weeks: list[int]) -> ScheduleData:
+    """Make the http request to retrieve data.
+
+    Prameters
+    ---------
+    program_value: str
+        The program value of the program to request
+    days: list[int]
+        A list of day of week to request
+    weeks: list[int]
+        A list of weeks to request
+
+    Returns
+    -------
+    ScheduleData
+        The data fetch
+    """
+    link = f"http://timetablingunmc.nottingham.ac.uk:8016/reporting/\
+TextSpreadsheet;programme+of+study;id;{program_value}%0D%0A?\
+days=1-7&weeks=1-52&periods=3-20&template=SWSCUST+programme+of+study+TextSpreadsheet&\
+height=100&week=100"
+
+    response: requests.Response = requests.get(link, timeout=10)
+    text = response.text
+
+    return parse_response(text, days, weeks)
+
+
+def parse_response(response: str, days: list[int],
+                   weeks: list[int]) -> ScheduleData:
+    """Parses the HTML response into a ScheduleData Object.
+
+    Parameters
+    ----------
+    response: str
+        The Response of the HTTP request
+    days: list[int]
+        A list of day of week to request
+    weeks: list[int]
+        A list of weeks to request
+
+    Returns
+    -------
+    ScheduleData
+        The data object
+    """
+    parser = ScheduleParser(days)
+    parser.feed(response)
+    parser.close()
+
+    data = parser.tables.copy()
+    for key, value in parser.tables.items():
+        data[key] = table_to_dict(value, verbose=False)
+
+    parsed_data = parse_data(data, weeks)
+    schedule_data = ScheduleData()
+    schedule_data.set("Subject", parsed_data["Module"])
+    schedule_data.set("Start Date", parsed_data["Date"])
+    schedule_data.set("Start Time", parsed_data["Start"])
+    schedule_data.set("End Time", parsed_data["End"])
+    schedule_data.set("Location", parsed_data["Room"])
+
+    return schedule_data
