@@ -332,10 +332,10 @@ page.
         """Make request for the raw HTML file."""
         self.main_layout.set_visible_child_name("Loading")
         response = Gio.File.new_for_uri(
-            "http://timetablingunmc.nottingham.ac.uk:8016/reporting/\
-TextSpreadsheet;programme+of+study;id;{0}%0D%0A?\
+            f"http://timetablingunmc.nottingham.ac.uk:8016/reporting/\
+TextSpreadsheet;programme+of+study;id;{self.export_options.get('program')}%0D%0A?\
 days=1-7&weeks=1-52&periods=3-20&template=SWSCUST+programme+of+study+TextSpreadsheet&\
-height=100&week=100".format(self.export_options.get("program"))
+height=100&week=100"
         )
         response.load_contents_async(None, self.handle_response, None)
 
@@ -389,7 +389,7 @@ height=100&week=100".format(self.export_options.get("program"))
             parent=self
         )
         self.dialog.set_current_name(
-            "output.{}".format(self.export_options.get("format"))
+            f"output.{self.export_options.get('format')}"
         )
 
         try:
