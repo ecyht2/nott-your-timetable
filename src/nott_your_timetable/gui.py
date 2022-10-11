@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""GUI related functions."""
 import gi
 from .utils.data import get_data, get_convinience_weeks, get_convinience_days
 from .utils.range_handlers import handle_ranges_days
