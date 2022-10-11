@@ -206,7 +206,8 @@ class NottWindow(Gtk.ApplicationWindow):
             self.__insert_row(i, label, combo)
             output.append(combo)
 
-        return tuple(output)
+        output = tuple(output)
+        return output
 
     def __setup_output_format(self) -> Gtk.ComboBoxText:
         """Setting Up File Format Options.
