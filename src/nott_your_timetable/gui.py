@@ -250,6 +250,7 @@ page.
         output: Gtk.ComboBoxText
             The combobox used to store the output format
         """
+        # pylint: disable=unused-argument
         # Getting convinience datas
         convinience: dict[dict[str, str]] = {
             "days": get_convinience_days(),
@@ -382,6 +383,7 @@ height=100&week=100"
         user_data: None
             User Data for the callback
         """
+        # pylint: disable=unused-argument
         # Setting Up File Chooser Dialog
         self.dialog = Gtk.FileChooserNative.new(
             title="Save Output As",
