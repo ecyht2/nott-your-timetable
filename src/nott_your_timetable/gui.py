@@ -48,7 +48,7 @@ class NottWindow(Gtk.ApplicationWindow):
         _, programs = get_data()
 
         # Deleting all keys
-        for i in range(listbox["count"]):
+        for _ in range(listbox["count"]):
             row = listbox["box"].get_row_at_index(0)
             listbox["box"].remove(row)
         # Reseting count
