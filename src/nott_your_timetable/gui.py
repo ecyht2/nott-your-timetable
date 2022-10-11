@@ -83,10 +83,17 @@ class NottWindow(Gtk.ApplicationWindow):
         # Setting Up File Format Options
         output = self.__setup_output_format()
 
+        widgets = {
+            "schools": schools,
+            "programs": programs["box"],
+            "weeks": weeks,
+            "days": days,
+            "output": output
+        }
+
         # Continue Button
         button = Gtk.Button(label="Continue")
-        button.connect("clicked", self.switch_export, schools, programs["box"],
-                       weeks, days, output)
+        button.connect("clicked", self.switch_export, widgets)
         self.options_layout.attach(button, 0, 6, 2, 1)
 
         # Adding to main stack layout
@@ -227,11 +234,8 @@ class NottWindow(Gtk.ApplicationWindow):
 
         return file_format
 
-    def switch_export(
-            self, button: Gtk.Button, schools: Gtk.ComboBoxText,
-            programs: Gtk.ListBox, weeks: Gtk.ComboBoxText,
-            days: Gtk.ComboBoxText, output: Gtk.ComboBoxText
-    ) -> None:
+    def switch_export(self, button: Gtk.Button,
+                      widgets: dict[Gtk.Widget]) -> None:
         """Callback when the continue button is pressed in the export options\
 page.
 
@@ -239,16 +243,9 @@ page.
         ---------
         button: Gtk.Button
             The continue button
-        schools: GObject.ComboBoxText
-            The combobox used to store the schools
-        programs: Gtk.ListBox
-            The listbox storing the programs
-        weeks: Gtk.ComboBoxText
-            The combobox used to store the weeks
-        days: Gtk.ComboBoxText
-            The combobox used to store the days
-        output: Gtk.ComboBoxText
-            The combobox used to store the output format
+        widgets: GtkWidget
+            A dictionary widgets of all the widgets used for setting up export\
+options
         """
         # pylint: disable=unused-argument
         # Getting convinience datas
@@ -257,8 +254,13 @@ page.
             "weeks": get_convinience_weeks()
         }
 
-        if not self.__get_export_options(schools, programs, weeks,
-                                         days, output):
+        if not self.__get_export_options(
+                widgets.get("schools"),
+                widgets.get("programs"),
+                widgets.get("weeks"),
+                widgets.get("days"),
+                widgets.get("output")
+        ):
             return
 
         # Checking if all settings were is filled
