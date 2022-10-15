@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 """GUI related functions."""
 import gi
-from .utils.data import get_data, get_convinience_weeks, get_convinience_days
-from .utils.range_handlers import handle_ranges_days
-from .utils.parsers import parse_response, get_program_value, ScheduleData
-gi.require_version("Gtk", "4.0")  # pylint: disable=wrong-import-position
+gi.require_version("Gtk", "4.0")
+# pylint: disable=wrong-import-position
 from gi.repository import Gtk, Gio, GLib  # noqa: E402
+from .utils.data import get_data, get_convinience_weeks,\
+    get_convinience_days  # noqa: E402
+from .utils.range_handlers import handle_ranges_days   # noqa: E402
+from .utils.parsers import parse_response, get_program_value,\
+    ScheduleData   # noqa: E402
+# pylint: enable=wrong-import-position
 
 
 class NottWindow(Gtk.ApplicationWindow):
