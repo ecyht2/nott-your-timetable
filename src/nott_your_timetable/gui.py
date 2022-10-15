@@ -441,19 +441,3 @@ class NottApp(Gtk.Application):
     def on_activate(self, app):
         win = NottWindow(application=self)
         win.present()
-
-
-class BoxWithLabel(Gtk.Grid):
-    """A Gtk Box with a label.
-
-    Parameters
-    ----------
-    label: str
-        The label for the widget
-    widget: Gtk.Widget
-        The widget
-    """
-    def __init__(self, label: str, widget: Gtk.Widget):
-        super().__init__(orientation=Gtk.Orientation.HORIZONTAL)
-        self.attach(Gtk.Label(label=label), 0, 0, 1, 1)
-        self.attach(widget, 1, 0, 5, 1)
