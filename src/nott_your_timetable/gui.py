@@ -434,10 +434,13 @@ height=100&week=100"
 
 
 class NottApp(Gtk.Application):
+    # pylint: disable=too-few-public-methods
+    """GTK application for nott-your-timetable."""
     def __init__(self):
         super().__init__(application_id="io.github.nott_your_timetable")
         self.connect('activate', self.on_activate)
 
     def on_activate(self, app):
-        win = NottWindow(application=self)
-        win.present()
+        """Activation Logic for application."""
+        self.win = NottWindow(application=app)
+        self.win.present()
