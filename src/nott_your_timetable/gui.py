@@ -17,6 +17,9 @@ class NottWindow(Gtk.ApplicationWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(title="Nott Your Timetable", *args, **kwargs)
 
+        # Setting up Needed variables
+        self.dialog = None
+
         # Setting up options variables
         self.export_options = {}
         self.output_options = {}
