@@ -453,6 +453,7 @@ class NottApp(Gtk.Application):
     def __init__(self):
         super().__init__(application_id="io.github.nott_your_timetable")
         self.connect('activate', self.on_activate)
+        self.win = None
 
     def on_activate(self, app):
         """Activation Logic for application."""
