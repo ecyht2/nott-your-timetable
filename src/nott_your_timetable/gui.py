@@ -430,10 +430,14 @@ height=100&week=100"
     ) -> None:
         """Logic when user chosen filename to save to.
 
-        :param dialog: The file selction dialog.
-        :param response: The response code of the dialog e.g.\
-(Accepted/Cancel/Quitted).
-        :param schedule_data: The ScheduleData object of the fetched data.
+        Parameters
+        ----------
+        dialog: Gtk.FileChooserNative
+            The file selction dialog.
+        response: Gtk.ResponseType
+            The response code of the dialog e.g. (Accepted/Cancel/Quitted).
+        schedule_data: ScheduleData
+            The ScheduleData object of the fetched data.
         """
         if response == Gtk.ResponseType.ACCEPT:
             file = dialog.get_file()
