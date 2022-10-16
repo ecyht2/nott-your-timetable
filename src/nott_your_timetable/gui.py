@@ -300,25 +300,20 @@ options
         self.spinner.start()
         self.make_request()
 
-    def __get_export_options(self, schools: Gtk.ComboBoxText,
-                             programs: Gtk.ListBox, weeks: Gtk.ComboBoxText,
-                             days: Gtk.ComboBoxText, output: Gtk.ComboBoxText
-                             ) -> bool:
+    def __get_export_options(self, widgets: dict[Gtk.Widget]) -> bool:
         """Gets the export options.
 
         Prameters
         ---------
-        schools: GObject.ComboBoxText
-            The combobox used to store the schools
-        programs: Gtk.ListBox
-            The listbox storing the programs
-        weeks: Gtk.ComboBoxText
-            The combobox used to store the weeks
-        days: Gtk.ComboBoxText
-            The combobox used to store the days
-        output: Gtk.ComboBoxText
-            The combobox used to store the output format
+        widgets: dict[Gtk.Widget]
+            A dictionary widgets of all the widgets used for setting up export\
+options
         """
+        schools = widgets.get("schools")
+        programs = widgets.get("programs")
+        weeks = widgets.get("weeks")
+        days = widgets.get("days")
+        output = widgets.get("output")
         # Getting all the settings
         try:
             self.export_options["division"] = schools.get_active_text()
