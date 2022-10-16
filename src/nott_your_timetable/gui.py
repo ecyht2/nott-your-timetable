@@ -262,11 +262,7 @@ options
         }
 
         if not self.__get_export_options(
-                widgets.get("schools"),
-                widgets.get("programs"),
-                widgets.get("weeks"),
-                widgets.get("days"),
-                widgets.get("output")
+                widgets
         ):
             return
 
