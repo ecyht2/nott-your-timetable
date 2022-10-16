@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """CLI related functions."""
 import argparse
-from .utils import get_data, find_current_week_nott
+from .utils.weeks import find_current_week_nott
+from .utils.data import get_data
 from .__init__ import __version__
 
 
