@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """Functions and Classes used by nott-your-timetable."""
-import sys
-import requests
-from xml.etree import ElementTree as ET
-from html.parser import HTMLParser
 import html
 import datetime
 import csv
+import sys
+import io
+from xml.etree import ElementTree as ET
+from html.parser import HTMLParser
 from collections import defaultdict
 from collections.abc import Iterable
 from typing import Any, NoReturn
-import io
+import requests
 from icalendar import Calendar as iCalendar
 from icalendar import Event as iEvent
 from .data import get_data
