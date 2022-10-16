@@ -18,7 +18,8 @@ authors = [
 ]
 
 [project.scripts]
-nott-your-timetable = "nott_your_timetable.nott_your_timetable:main_cli"
+nott-your-timetable-cli = "nott_your_timetable.nott_your_timetable:main_cli"
+nott-your-timetable = "nott_your_timetable.nott_your_timetable:main_gui"
 
 [project.urls]
 "Homepage" = "https://github.com/ecyht2/nott-your-timetable"
