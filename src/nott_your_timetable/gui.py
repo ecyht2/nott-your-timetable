@@ -86,7 +86,7 @@ class NottWindow(Gtk.ApplicationWindow):
         programs = self.__setup_programs()
         schools.connect("changed", self.school_changed, programs)
         # Setting Up Week and Days Options
-        weeks, days = self.__setup_weeks_days()
+        weeks, days, *_ = self.__setup_weeks_days()
         # Setting Up File Format Options
         output = self.__setup_output_format()
 
