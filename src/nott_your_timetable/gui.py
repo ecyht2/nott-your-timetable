@@ -271,8 +271,8 @@ options
             return
 
         # Checking if all settings were is filled
-        if any([value is None or value == "" for value in
-                self.export_options.values()]):
+        if any(value is None or value == "" for value in
+                self.export_options.values()):
             self.show_error()
             return
 
