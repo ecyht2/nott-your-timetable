@@ -3,6 +3,7 @@ name: Compile Executable
 on:
   release:
     types: [published]
+  workflow_run:
   
 permissions:
   contents: read
@@ -12,15 +13,29 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest, macos-latest]
+        include:
+          - os: macos-latest
+            shell: bash
+            install-dependencies: brew install pygobject3 gtk+3
+          - os: windows-latest
+            shell: msys2 {0}
+            install-dependencies: pacman -Syu --noconfirm mingw-w64-x86_64-gtk3 mingw-w64-x86_64-python3-gobject
+    defaults:
+      run: |
+        shell: ${{ matrix.shell }}
+        
     runs-on: ${{ matrix.os }}
     
     steps:
       - uses: action/checkout@v3
       
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python "3.10"
         uses: actions/setup-python@v3
         with:
          python-version: "3.10"
+         
+      - name: Installing System Dependencies
+        run: ${{ matrix.install-dependencies }}
         
       - name: Installing nott-your-timetable
         run: |
@@ -30,5 +45,5 @@ jobs:
       - name: Compiling Executable
         run: pyinstaller $(which nott-your-timetable)
           
-      - name: Uploading Executable
-        run: gh release upload ${{ env.version }} dist/nott-your-timetable/nott-your-timetable*
+      #- name: Uploading Executable
+      #  run: gh release upload ${{ env.version }} dist/nott-your-timetable/nott-your-timetable*
