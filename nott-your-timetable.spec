@@ -5,10 +5,10 @@ block_cipher = None
 
 
 a = Analysis(
-    ['./nott-your-timetable'],
+    ['nott-your-timetable'],
     pathex=[],
     binaries=[],
-    datas=[('./src/nott_your_timetable/data/', 'nott_your_timetable/data')],
+    datas=[('src/nott_your_timetable/data/', 'nott_your_timetable/data')],
     hiddenimports=[],
     hookspath=[],
     # https://github.com/pyinstaller/pyinstaller/pull/6834
@@ -40,6 +40,8 @@ exe = EXE(
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
+    upx_exclude=[],
+    runtime_tmpdir=None,
     console=False,
     disable_windowed_traceback=False,
     argv_emulation=False,
