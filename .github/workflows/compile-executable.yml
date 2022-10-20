@@ -21,7 +21,7 @@ jobs:
             shell: msys2 {0}
             install-dependencies: pacman -Syu --noconfirm mingw-w64-x86_64-gtk3 mingw-w64-x86_64-python3-gobject
     defaults:
-      run: |
+      run: 
         shell: ${{ matrix.shell }}
         
     runs-on: ${{ matrix.os }}
