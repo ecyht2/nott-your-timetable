@@ -3,7 +3,7 @@ name: Compile Executable
 on:
   release:
     types: [published]
-  workflow_run:
+  dispatch_workflow:
   
 permissions:
   contents: read
