@@ -1,15 +1,110 @@
 #!/usr/bin/env python3
 """GUI related functions."""
+from typing import Callable
 import gi
 gi.require_version("Gtk", "4.0")
 # pylint: disable=wrong-import-position
-from gi.repository import Gtk, Gio, GLib  # noqa: E402
+from gi.repository import Gtk, Gio, GLib, GObject  # noqa: E402
 from .utils.data import get_data, get_convinience_weeks,\
     get_convinience_days  # noqa: E402
 from .utils.range_handlers import handle_ranges_days   # noqa: E402
-from .utils.parsers import parse_response, get_program_value,\
-    ScheduleData   # noqa: E402
+from .utils.parsers import get_program_value, ScheduleData,\
+    make_request   # noqa: E402
 # pylint: enable=wrong-import-position
+
+
+class MakeRequestWrapper(GObject.Object):
+    """MakeRequest is a GObject wrapper for make_request function.
+
+    MakeRequest provides a syncronous and asyncronous way of requesting
+    data.
+
+    Parameters
+    ----------
+    program_value: str
+        The Program Value of the program to fetch
+    days: list[int]
+        The list days to fetch
+    weeks: list[int]
+        The list of weeks to fetch
+    """
+    def __init__(self, program_value: str, days: list[int], weeks: list[int]):
+        super().__init__()
+        self.program_value = program_value
+        self.days = days
+        self.weeks = weeks
+        self.pool = {}
+
+    def make_request_sync(self) -> ScheduleData:
+        """Fetch data in a syncronous way."""
+        data = make_request(self.program_value, self.days, self.weeks)
+        return data
+
+    def make_request_async(self, cancellable: Gio.Cancellable,
+                           callback: Callable, *user_data):
+        """Fetch data in an asyncronous way.
+
+        Prameters
+        ---------
+        cancellable: Gio.Cancellable
+            Sets if the operation is cancelable
+        callback: Callable
+            Callback function to use when the process finishes
+        *user_data
+            User data to pass into callback
+        """
+        task = Gio.Task.new(self, cancellable, callback, *user_data)
+
+        # If task isn't cancellable
+        if cancellable is None:
+            task.set_return_on_cancel(False)
+
+        # Setting Task Data
+        data = (self.program_value, self.days, self.weeks)
+        data_id = id(data)
+        self.pool[data_id] = data
+        task.set_task_data(data_id, lambda key: self.pool.pop(data_id))
+
+        # Fetching data in different thread
+        task.run_in_thread(self.__thread_callback)
+
+    def __thread_callback(self, task: Gio.AsyncResult, worker,
+                          task_data: None, cancellable: Gio.Cancellable):
+        """Function used when fetching data in a different thread."""
+        data_id = task.get_task_data()
+        data = self.pool.get(data_id)
+
+        try:
+            outcome = make_request(*data)
+        except Exception as e:
+            print(e)
+            task.return_error(GLib.Error(" ".join(e.args), "requests-error"))
+        else:
+            task.return_value(outcome)
+
+    def make_request_finish(self, result: Gio.AsyncResult) -> ScheduleData:
+        """Returns the fetch ``ScheduleData`` Object when the asyncronous
+        fetching completed.
+
+        Parameters
+        ----------
+        task: Gio.AsyncResult
+            The task used to fetch data asyncronously
+
+        Returns
+        -------
+        ScheduleData
+            The data that is fetched
+        """
+        value = None
+
+        if Gio.Task.is_valid(result, self):
+            value = result.propagate_value().value
+        else:
+            error = "Gio.Task.is_valid returned False."
+            value = {"AsyncWorkerError": error}
+
+        return value
 
 
 class NottWindow(Gtk.ApplicationWindow):
@@ -332,13 +427,12 @@ options
     def make_request(self) -> None:
         """Make request for the raw HTML file."""
         self.main_layout.set_visible_child_name("Loading")
-        response = Gio.File.new_for_uri(
-            f"http://timetablingunmc.nottingham.ac.uk:8016/reporting/\
-TextSpreadsheet;programme+of+study;id;{self.export_options.get('program')}%0D%0A?\
-days=1-7&weeks=1-52&periods=3-20&template=SWSCUST+programme+of+study+TextSpreadsheet&\
-height=100&week=100"
+        response = MakeRequestWrapper(
+            self.export_options.get('program'),
+            self.export_options.get("days"),
+            self.export_options.get("weeks")
         )
-        response.load_contents_async(None, self.handle_response, None)
+        response.make_request_async(None, self.handle_response, None)
 
     def show_error(self) -> None:
         """Function that shows an error dialog."""
@@ -370,8 +464,8 @@ height=100&week=100"
 
         self.main_layout.add_named(layout, "Loading")
 
-    def handle_response(self, source_object: object, result: Gio.Task,
-                        user_data: None) -> None:
+    def handle_response(self, source_object: MakeRequestWrapper,
+                        result: Gio.AsyncResult, user_data: None) -> None:
         """Callback Function to handle the raw data HTML page.
 
         Paramters
@@ -396,20 +490,14 @@ height=100&week=100"
 
         try:
             # Getting Data
-            _, content, _ = source_object.load_contents_finish(result)
+            schedule_data = source_object.make_request_finish(result)
         except GLib.GError:
             # Error
             self.main_layout.set_visible_child_name("Error")
         else:
             # Switching to success page
             self.main_layout.set_visible_child_name("Success")
-            # Getting and parsing Data
-            content = content.decode("utf-8")
-            schedule_data = parse_response(
-                content,
-                self.export_options.get("days"),
-                self.export_options.get("weeks")
-            )
+
             # Showing File Chooser Dialog
             self.dialog.connect("response", self.file_chosen, schedule_data)
             self.dialog.show()
