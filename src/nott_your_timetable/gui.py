@@ -71,6 +71,7 @@ class MakeRequestWrapper(GObject.Object):
     def __thread_callback(self, task: Gio.AsyncResult, worker,
                           task_data: None, cancellable: Gio.Cancellable):
         """Function used when fetching data in a different thread."""
+        # pylint: disable=unused-argument
         data_id = task.get_task_data()
         data = self.pool.get(data_id)
 
