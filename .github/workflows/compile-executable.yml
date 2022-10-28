@@ -13,6 +13,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest, macos-latest]
+        spec-file: [nott-your-timetable.spec]
         include:
           - os: macos-latest
             shell: bash
@@ -35,6 +36,8 @@ jobs:
           msystem: mingw64
           
       - uses: actions/checkout@v3
+        with:
+          ref: 'v1.3.4'
 
       - name: Set up Python "3.10"
         uses: actions/setup-python@v3
@@ -50,7 +53,8 @@ jobs:
           python -m pip install pyinstaller
           
       - name: Compiling Executable
-        run: pyinstaller nott-your-timetable.spec
+        run: pyinstaller ${{ matrix.spec-file }}
           
-      #- name: Uploading Executable
-      #  run: gh release upload ${{ env.version }} dist/nott-your-timetable/nott-your-timetable*
+      - name: Uploading Executable
+        # run: gh release upload ${{ env.version }} dist/nott-your-timetable/nott-your-timetable*
+        run: gh release upload 'v1.3.4 dist/nott-your-timetable*
