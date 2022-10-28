@@ -27,11 +27,12 @@ jobs:
     runs-on: ${{ matrix.os }}
     
     steps:
-      - name: Installing System Dependencies
+      - name: Installing msys2
         if: matrix.os == 'windows-latest'
         uses: msys2/setup-msys2@v2
         with: 
           update: true
+          msystem: mingw64
           
       - uses: actions/checkout@v3
 
