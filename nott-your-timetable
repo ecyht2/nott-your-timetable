@@ -1,4 +1,3 @@
-#!/home/user/.local/share/virtualenvs/nott-your-timetable-4K2hnzMP/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys
