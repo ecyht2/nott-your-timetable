@@ -76,9 +76,9 @@ class MakeRequestWrapper(GObject.Object):
 
         try:
             outcome = make_request(*data)
-        except Exception as e:
-            print(e)
-            task.return_error(GLib.Error(" ".join(e.args), "requests-error"))
+        except Exception as error:
+            task.return_error(GLib.Error(" ".join(error.args),
+                                         "requests-error"))
         else:
             task.return_value(outcome)
 
