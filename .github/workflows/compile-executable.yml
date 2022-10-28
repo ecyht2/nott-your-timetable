@@ -52,6 +52,8 @@ jobs:
           python -m pip install -e .
           python -m pip install pyinstaller
           
+      - run: ls
+      
       - name: Compiling Executable
         run: pyinstaller ${{ matrix.spec-file }}
           
