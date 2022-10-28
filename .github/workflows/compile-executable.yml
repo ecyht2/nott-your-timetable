@@ -27,8 +27,14 @@ jobs:
     runs-on: ${{ matrix.os }}
     
     steps:
+      - name: Installing System Dependencies
+        if: matrix.os == "windows-latest"
+        uses: msys2/setup-msys2@v2
+        with: 
+          update: true
+          
       - uses: actions/checkout@v3
-      
+
       - name: Set up Python "3.10"
         uses: actions/setup-python@v3
         with:
@@ -36,14 +42,14 @@ jobs:
          
       - name: Installing System Dependencies
         run: ${{ matrix.install-dependencies }}
-        
+         
       - name: Installing nott-your-timetable
         run: |
           python -m pip install -e .
           python -m pip install pyinstaller
           
       - name: Compiling Executable
-        run: pyinstaller $(which nott-your-timetable)
+        run: pyinstaller nott-your-timetable.spec
           
       #- name: Uploading Executable
       #  run: gh release upload ${{ env.version }} dist/nott-your-timetable/nott-your-timetable*
