@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """GUI related functions."""
 from typing import Callable
+import requests
 import gi
 gi.require_version("Gtk", "4.0")
 # pylint: disable=wrong-import-position
@@ -71,14 +72,15 @@ class MakeRequestWrapper(GObject.Object):
     def __thread_callback(self, task: Gio.AsyncResult, worker,
                           task_data: None, cancellable: Gio.Cancellable):
         """Function used when fetching data in a different thread."""
+        # pylint: disable=unused-argument
         data_id = task.get_task_data()
         data = self.pool.get(data_id)
 
         try:
             outcome = make_request(*data)
-        except Exception as e:
-            print(e)
-            task.return_error(GLib.Error(" ".join(e.args), "requests-error"))
+        except requests.RequestException as error:
+            task.return_error(GLib.Error(" ".join(error.args),
+                                         "requests-error"))
         else:
             task.return_value(outcome)
 
