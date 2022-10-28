@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """GUI related functions."""
 from typing import Callable
+import requests
 import gi
 gi.require_version("Gtk", "4.0")
 # pylint: disable=wrong-import-position
