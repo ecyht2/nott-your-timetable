@@ -25,7 +25,7 @@ jobs:
             install-dependencies: brew install pygobject3 gtk+3
           - os: windows-latest
             shell: msys2 {0}
-            install-dependencies: pacman -Syu --noconfirm mingw-w64-x86_64-gtk3 mingw-w64-x86_64-python3-gobject
+            install-dependencies: pacman -Syu --noconfirm mingw-w64-x86_64-gtk3 mingw-w64-x86_64-python3-gobject mingw-w64-x86_64-python3
     defaults:
       run: 
         shell: ${{ matrix.shell }}
