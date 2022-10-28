@@ -7,7 +7,7 @@ on:
     inputs:
       version:
         description: "Version of Release to upload to"
-        required: true
+        # required: true
         type: string
   
 permissions:
@@ -56,11 +56,9 @@ jobs:
         run: |
           python -m pip install -e .
           python -m pip install pyinstaller
-          
-      - run: ls
       
       - name: Compiling Executable
         run: pyinstaller ${{ matrix.spec-file }}
           
-      - name: Uploading Executable
-        run: gh release upload ${{ env.version }} dist/nott-your-timetable*
+      #- name: Uploading Executable
+      #  run: gh release upload ${{ env.version }} dist/nott-your-timetable*
