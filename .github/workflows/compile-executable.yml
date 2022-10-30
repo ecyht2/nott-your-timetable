@@ -23,11 +23,11 @@ jobs:
           - os: macos-latest
             shell: bash
             install-dependencies: brew install pygobject3 gtk+3
-            extension: application
+            extension: .app
           - os: windows-latest
             shell: msys2 {0}
             install-dependencies: pacman -Syu --noconfirm mingw-w64-x86_64-gtk3 mingw-w64-x86_64-python3-gobject mingw-w64-x86_64-python3 mingw-w64-x86_64-python3-pip
-            extension: exe
+            extension: .exe
           # - spec-file: nott-your-timetable-folder.spec
           # extension: zip
     defaults:
@@ -71,10 +71,9 @@ jobs:
         if: matrix.spec-file == 'nott-your-timetable-folder.spec'
         run: zip -r dist/nott-your-timetable.zip dist/nott-your-timetable
 
-      - run: ls dist/
       - run: zip
           
       - name: Uploading Executable
-        run: gh release upload ${{ inputs.version }} dist/nott-your-timetable.${{ matrix.extension }}
+        run: gh release upload ${{ inputs.version }} dist/nott-your-timetable${{ matrix.extension }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
