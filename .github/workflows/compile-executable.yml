@@ -29,6 +29,7 @@ jobs:
             install-dependencies: pacman -Syu --noconfirm mingw-w64-x86_64-gtk3 mingw-w64-x86_64-python3-gobject mingw-w64-x86_64-python3 mingw-w64-x86_64-python3-pip
             extension: .exe
           # - spec-file: nott-your-timetable-folder.spec
+          # os: windows-latest
           # extension: zip
     defaults:
       run: 
@@ -65,18 +66,19 @@ jobs:
           python -m pip install pyinstaller
       
       - name: Compiling Executable
-        run: pyinstaller nott-your-timetable --windowed --onefile
+        run: pyinstaller ${{ matrix.spec-file }}
+
       #- name: Zipping Folder
       #  if: matrix.spec-file == 'nott-your-timetable-folder.spec'
       #  run: zip -r dist/nott-your-timetable.zip dist/nott-your-timetable
 
-      - run: |
-          zip
-          ls -la
-          echo -------------------------
-          ls -la dist/
+      - run: ls -la dist/
 
-      - run: cat nott-your-timetable.spec
+      - name: Making DMG
+        if: matrix.os == 'macos-latest'
+        run: |
+          dd if=dist/nott-your-timetable.app of=nott-your-timetable.dmg bs=1M count=64
+        # mkfs.hfsplus -v ThisIsFoo /tmp/foo.dmg
           
       - name: Uploading Executable
         run: gh release upload ${{ inputs.version }} dist/nott-your-timetable${{ matrix.extension }}
