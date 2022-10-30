@@ -23,7 +23,7 @@ jobs:
           - os: macos-latest
             shell: bash
             install-dependencies: brew install pygobject3 gtk+3
-            extension: .app
+            extension: .zip
           - os: windows-latest
             shell: msys2 {0}
             install-dependencies: pacman -Syu --noconfirm mingw-w64-x86_64-gtk3 mingw-w64-x86_64-python3-gobject mingw-w64-x86_64-python3 mingw-w64-x86_64-python3-pip
@@ -76,9 +76,12 @@ jobs:
 
       - name: Making DMG
         if: matrix.os == 'macos-latest'
-        run: |
-          dd if=dist/nott-your-timetable.app of=nott-your-timetable.dmg bs=1M count=64
-        # mkfs.hfsplus -v ThisIsFoo /tmp/foo.dmg
+        # https://stackoverflow.com/questions/286419/how-to-build-a-dmg-mac-os-x-file-on-a-non-mac-platform
+        # https://stackoverflow.com/questions/96882/how-do-i-create-a-nice-looking-dmg-for-mac-os-x-using-command-line-tools
+        #run: |
+        #  dd if=/dev/zero of=dist/nott-your-timetable.dmg bs=1M count=16 status=progress
+        #  mkfs.hfsplus -v Install dist/nott-your-timetable.dmg
+        run: zip -r dist/nott-your-timetable.zip dist/nott-your-timetable.app
           
       - name: Uploading Executable
         run: gh release upload ${{ inputs.version }} dist/nott-your-timetable${{ matrix.extension }}
