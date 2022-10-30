@@ -18,7 +18,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest, macos-latest]
-        spec-file: [nott-your-timetable-folder.spec]
+        spec-file: [nott-your-timetable.spec]
         include:
           - os: macos-latest
             shell: bash
@@ -65,16 +65,18 @@ jobs:
           python -m pip install pyinstaller
       
       - name: Compiling Executable
-        run: pyinstaller ${{ matrix.spec-file }}
-
+        run: pyinstaller nott-your-timetable --windowed --onefile
       #- name: Zipping Folder
       #  if: matrix.spec-file == 'nott-your-timetable-folder.spec'
       #  run: zip -r dist/nott-your-timetable.zip dist/nott-your-timetable
 
       - run: |
           zip
+          ls -la
+          echo -------------------------
           ls -la dist/
-          ls -la dist/nott-your-timetable/
+
+      - run: cat nott-your-timetable.spec
           
       - name: Uploading Executable
         run: gh release upload ${{ inputs.version }} dist/nott-your-timetable${{ matrix.extension }}
