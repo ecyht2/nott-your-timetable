@@ -36,13 +36,13 @@ jobs:
         
     runs-on: ${{ matrix.os }}
     
-    steps:
-      env:
+    env:
         if: github.event_name == 'workflow_dispatch'
         version: ${{ inputs.version }}
         elif: github.event_name == 'release'
         version: ${{ release.tag_name }}
 
+    steps:
       - run: echo ${{ release.tag_name }}
 
       - name: Installing msys2
