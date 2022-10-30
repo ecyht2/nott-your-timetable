@@ -38,6 +38,8 @@ jobs:
 
     env:
       version: ${{ github.event.release.tag_name }}
+      if: inputs.version != ''
+      version: ${{ inputs.version }}
 
     steps:
       - name: Installing msys2
