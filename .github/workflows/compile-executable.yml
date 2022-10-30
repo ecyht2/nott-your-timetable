@@ -35,14 +35,13 @@ jobs:
         shell: ${{ matrix.shell }}
         
     runs-on: ${{ matrix.os }}
-    
-    env:
-        version: ${{ release.tag_name }}
 
     steps:
-      - name: Setting ENV for manual run
+      - name: Setting version ENV
         if: github.event_name == 'workflow_dispatch'
         run: echo "version=${{ inputs.version }}" >> $GITHUB_ENV
+        elif: github.event_name == 'release'
+        run: echo "version=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
 
       - name: Installing msys2
         if: matrix.os == 'windows-latest'
