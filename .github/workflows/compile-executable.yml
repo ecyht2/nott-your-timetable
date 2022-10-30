@@ -23,9 +23,13 @@ jobs:
           - os: macos-latest
             shell: bash
             install-dependencies: brew install pygobject3 gtk+3
+            extension: application
           - os: windows-latest
             shell: msys2 {0}
             install-dependencies: pacman -Syu --noconfirm mingw-w64-x86_64-gtk3 mingw-w64-x86_64-python3-gobject mingw-w64-x86_64-python3 mingw-w64-x86_64-python3-pip
+            extension: exe
+          # - spec-file: nott-your-timetable-folder.spec
+          # extension: zip
     defaults:
       run: 
         shell: ${{ matrix.shell }}
@@ -33,6 +37,14 @@ jobs:
     runs-on: ${{ matrix.os }}
     
     steps:
+      env:
+        if: github.event_name == 'workflow_dispatch'
+        version: ${{ inputs.version }}
+        elif: github.event_name == 'release'
+        version: ${{ release.tag_name }}
+
+      - run: echo ${{ release.tag_name }}
+
       - name: Installing msys2
         if: matrix.os == 'windows-latest'
         uses: msys2/setup-msys2@v2
@@ -42,7 +54,7 @@ jobs:
           
       - uses: actions/checkout@v3
         with:
-          ref: ${{ env.version }}
+          # ref: ${{ env.version }}
 
       - name: Set up Python "3.10"
         uses: actions/setup-python@v3
@@ -59,6 +71,10 @@ jobs:
       
       - name: Compiling Executable
         run: pyinstaller ${{ matrix.spec-file }}
+
+      - name: Zipping Folder
+        if: matrix.spec-file == 'nott-your-timetable-folder.spec'
+        run: zip -r dist/nott-your-timetable.zip dist/nott-your-timetable
           
-      #- name: Uploading Executable
-      #  run: gh release upload ${{ env.version }} dist/nott-your-timetable*
+      - name: Uploading Executable
+        run: gh release upload ${{ env.version }} dist/nott-your-timetable.${{ matrix.extension }}
