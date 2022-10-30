@@ -70,6 +70,9 @@ jobs:
       - name: Zipping Folder
         if: matrix.spec-file == 'nott-your-timetable-folder.spec'
         run: zip -r dist/nott-your-timetable.zip dist/nott-your-timetable
+
+      - run: ls dist/
+      - run: zip
           
       - name: Uploading Executable
         run: gh release upload ${{ inputs.version }} dist/nott-your-timetable.${{ matrix.extension }}
