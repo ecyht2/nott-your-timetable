@@ -11,7 +11,7 @@ on:
         type: string
   
 permissions:
-  contents: read
+  contents: read/write
   
 jobs:
   compile-and-upload:
@@ -28,9 +28,9 @@ jobs:
             shell: msys2 {0}
             install-dependencies: pacman -Syu --noconfirm mingw-w64-x86_64-gtk3 mingw-w64-x86_64-python3-gobject mingw-w64-x86_64-python3 mingw-w64-x86_64-python3-pip
             extension: .exe
-          # - spec-file: nott-your-timetable-folder.spec
-          # os: windows-latest
-          # extension: zip
+          - spec-file: nott-your-timetable-folder.spec
+            os: windows-latest
+            extension: zip
     defaults:
       run: 
         shell: ${{ matrix.shell }}
@@ -68,11 +68,9 @@ jobs:
       - name: Compiling Executable
         run: pyinstaller ${{ matrix.spec-file }}
 
-      #- name: Zipping Folder
-      #  if: matrix.spec-file == 'nott-your-timetable-folder.spec'
-      #  run: zip -r dist/nott-your-timetable.zip dist/nott-your-timetable
-
-      - run: ls -la dist/
+      - name: Zipping Folder
+        if: matrix.spec-file == 'nott-your-timetable-folder.spec'
+        run: zip -r dist/nott-your-timetable.zip dist/nott-your-timetable
 
       - name: Making DMG
         if: matrix.os == 'macos-latest'
