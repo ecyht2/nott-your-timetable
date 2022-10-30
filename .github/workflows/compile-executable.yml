@@ -37,7 +37,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     env:
-      version: ${{ [github.event.release.tag_name, inputs.version, 'test'] }}
+      version: ${{ github.event.release.tag_name }}
 
     steps:
       - name: Installing msys2
@@ -72,4 +72,4 @@ jobs:
         run: zip -r dist/nott-your-timetable.zip dist/nott-your-timetable
           
       - name: Uploading Executable
-        run: gh release upload ${{ env.version }} dist/nott-your-timetable.${{ matrix.extension }}
+        run: gh release upload ${{ inputs.version }} dist/nott-your-timetable.${{ matrix.extension }}
