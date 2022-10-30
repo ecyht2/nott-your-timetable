@@ -67,11 +67,13 @@ jobs:
       - name: Compiling Executable
         run: pyinstaller ${{ matrix.spec-file }}
 
-      - name: Zipping Folder
-        if: matrix.spec-file == 'nott-your-timetable-folder.spec'
-        run: zip -r dist/nott-your-timetable.zip dist/nott-your-timetable
+      #- name: Zipping Folder
+      #  if: matrix.spec-file == 'nott-your-timetable-folder.spec'
+      #  run: zip -r dist/nott-your-timetable.zip dist/nott-your-timetable
 
-      - run: zip
+      - run: |
+          zip
+          ls -la dist/
           
       - name: Uploading Executable
         run: gh release upload ${{ inputs.version }} dist/nott-your-timetable${{ matrix.extension }}
