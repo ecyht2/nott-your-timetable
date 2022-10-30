@@ -37,9 +37,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     env:
-      version: ${{ github.event.release.tag_name }}
-      if: inputs.version != ''
-      version: ${{ inputs.version }}
+      version: ${{ github.event.release.tag_name || inputs.version }}
 
     steps:
       - name: Installing msys2
