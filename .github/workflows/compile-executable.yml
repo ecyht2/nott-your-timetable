@@ -65,7 +65,7 @@ jobs:
           python -m pip install pyinstaller
       
       - name: Compiling Executable
-        run: pyinstaller nott-your-timetable --windowed --onefile
+        run: pyinstaller ${{ matrix.spec-file }}
 
       #- name: Zipping Folder
       #  if: matrix.spec-file == 'nott-your-timetable-folder.spec'
@@ -74,6 +74,7 @@ jobs:
       - run: |
           zip
           ls -la dist/
+          ls -la dist/nott-your-timetable/
           
       - name: Uploading Executable
         run: gh release upload ${{ inputs.version }} dist/nott-your-timetable${{ matrix.extension }}
