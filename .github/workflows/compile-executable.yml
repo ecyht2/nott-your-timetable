@@ -28,9 +28,9 @@ jobs:
             shell: msys2 {0}
             install-dependencies: pacman -Syu --noconfirm mingw-w64-x86_64-gtk3 mingw-w64-x86_64-python3-gobject mingw-w64-x86_64-python3 mingw-w64-x86_64-python3-pip
             extension: .exe
-          - os: windows-latest
-            spec-file: nott-your-timetable-folder.spec
-            extension: zip
+          #- os: windows-latest
+          #  spec-file: nott-your-timetable-folder.spec
+          #  extension: zip
     defaults:
       run: 
         shell: ${{ matrix.shell }}
