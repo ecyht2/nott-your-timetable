@@ -18,22 +18,22 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest, macos-latest]
-        spec-file: [nott-your-timetable.spec]
+        spec-file: [nott-your-timetable.spec, nott-your-timetable-folder.spec]
         include:
           - os: macos-latest
             shell: bash
             install-dependencies: brew install pygobject3 gtk+3
-            extension: .zip
+            extension: "-macos.zip"
           - os: windows-latest
             shell: msys2 {0}
-            install-dependencies: pacman -Syu --noconfirm mingw-w64-x86_64-gtk3 mingw-w64-x86_64-python3-gobject mingw-w64-x86_64-python3 mingw-w64-x86_64-python3-pip
+            install-dependencies: pacman -Syu --noconfirm mingw-w64-x86_64-gtk3 mingw-w64-x86_64-python3-gobject mingw-w64-x86_64-python3-pip
             extension: .exe
-          #- os: windows-latest
-          #  spec-file: nott-your-timetable-folder.spec
-          #  extension: zip
-    defaults:
-      run: 
-        shell: ${{ matrix.shell }}
+          - os: windows-latest
+            spec-file: nott-your-timetable-folder.spec
+            extension: .zip
+          - os: macos-latest
+            spec-file: nott-your-timetable-folder.spec
+            extension: "-folder-macos.zip"
         
     runs-on: ${{ matrix.os }}
 
@@ -47,6 +47,8 @@ jobs:
         with: 
           update: true
           msystem: mingw64
+          install: >-
+            zip
           
       - uses: actions/checkout@v3
         # with:
@@ -59,27 +61,32 @@ jobs:
          
       - name: Installing System Dependencies
         run: ${{ matrix.install-dependencies }}
+        shell: ${{ matrix.shell }}
          
       - name: Installing nott-your-timetable
         run: |
           python -m pip install -e .
           python -m pip install pyinstaller
+        shell: ${{ matrix.shell }}
       
       - name: Compiling Executable
         run: pyinstaller ${{ matrix.spec-file }}
+        shell: ${{ matrix.shell }}
 
       - name: Zipping Folder
-        if: matrix.spec-file == 'nott-your-timetable-folder.spec'
-        run: zip -r dist/nott-your-timetable.zip dist/nott-your-timetable
+        if: (matrix.spec-file == 'nott-your-timetable-folder.spec') && (matrix.os == 'windows-latest')
+        run: |
+          cd dist/
+          zip -r nott-your-timetable.zip nott-your-timetable
+        shell: ${{ matrix.shell }}
 
-      - name: Making DMG
+      - name: Compressing and Archiving for MacOS
         if: matrix.os == 'macos-latest'
         # https://stackoverflow.com/questions/286419/how-to-build-a-dmg-mac-os-x-file-on-a-non-mac-platform
         # https://stackoverflow.com/questions/96882/how-do-i-create-a-nice-looking-dmg-for-mac-os-x-using-command-line-tools
-        #run: |
-        #  dd if=/dev/zero of=dist/nott-your-timetable.dmg bs=1M count=16 status=progress
-        #  mkfs.hfsplus -v Install dist/nott-your-timetable.dmg
-        run: zip -r dist/nott-your-timetable.zip dist/nott-your-timetable.app
+        run: |
+          cd dist/
+          zip -r nott-your-timetable${{ matrix.extension }} nott-your-timetable.app
           
       - name: Uploading Executable
         run: gh release upload ${{ inputs.version }} dist/nott-your-timetable${{ matrix.extension }}
