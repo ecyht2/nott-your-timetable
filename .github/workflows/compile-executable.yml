@@ -18,7 +18,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest, macos-latest]
-        spec-file: [nott-your-timetable.spec]
+        spec-file: [nott-your-timetable-folder.spec]
         include:
           - os: macos-latest
             shell: bash
