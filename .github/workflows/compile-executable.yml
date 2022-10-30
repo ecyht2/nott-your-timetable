@@ -73,3 +73,5 @@ jobs:
           
       - name: Uploading Executable
         run: gh release upload ${{ inputs.version }} dist/nott-your-timetable.${{ matrix.extension }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
