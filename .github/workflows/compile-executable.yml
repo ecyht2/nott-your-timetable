@@ -55,8 +55,8 @@ jobs:
             zip
           
       - uses: actions/checkout@v3
-        # with:
-          # ref: ${{ env.version }}
+        with:
+          ref: ${{ env.version }}
 
       - name: Set up Python "3.10"
         uses: actions/setup-python@v4
