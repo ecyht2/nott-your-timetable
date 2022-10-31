@@ -64,15 +64,15 @@ nott-your-timetable -h
     * [ ] vCard
   * [x] Support for other course programs
   * [x] Add more convinience option e.g. Schedule for Spring Semester
-  * [ ] A graphical frontend
+  * [x] A graphical frontend
   * [ ] Add GUI and TUI for displaying timetable
   * [ ] Make use of [Calender Object](https://docs.python.org/3/library/calendar.html)
   * [ ] Add Export Options
   * [x] Add better help descriptions
   * [ ] Support for mutiple program selection
-  * [ ] Add binaries
-    * [ ] EXE (Windows)
-    * [ ] Application (MacOS)
+  * [x] Add binaries
+    * [x] EXE (Windows)
+    * [x] Application (MacOS)
     * [ ] Appimage (Linux)
     * [ ] PKGBUILD (AUR/Arch)
     * [ ] DEB (Debian)
