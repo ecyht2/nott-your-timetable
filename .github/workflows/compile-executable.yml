@@ -22,11 +22,11 @@ jobs:
         include:
           - os: macos-latest
             shell: bash
-            install-dependencies: brew install pygobject3 gtk+3
+            install-dependencies: brew install pygobject3 gtk4
             extension: "-macos.zip"
           - os: windows-latest
             shell: msys2 {0}
-            install-dependencies: pacman -Syu --noconfirm mingw-w64-x86_64-gtk3 mingw-w64-x86_64-python3-gobject mingw-w64-x86_64-python3-pip
+            install-dependencies: pacman -Syu --noconfirm mingw-w64-x86_64-gtk4 mingw-w64-x86_64-python3-gobject mingw-w64-x86_64-python3-pip
             extension: .exe
           - os: windows-latest
             spec-file: nott-your-timetable-folder.spec
