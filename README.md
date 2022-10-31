@@ -72,7 +72,7 @@ nott-your-timetable -h
   * [ ] Support for mutiple program selection
   * [x] Add binaries
     * [x] EXE (Windows)
-    * [x] Application (MacOS)
+    * [ ] Application (MacOS)
     * [ ] Appimage (Linux)
     * [ ] PKGBUILD (AUR/Arch)
     * [ ] DEB (Debian)
