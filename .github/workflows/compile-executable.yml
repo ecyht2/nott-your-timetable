@@ -61,24 +61,20 @@ jobs:
          
       - name: Installing System Dependencies
         run: ${{ matrix.install-dependencies }}
-        shell: ${{ matrix.shell }}
          
       - name: Installing nott-your-timetable
         run: |
           python -m pip install -e .
           python -m pip install pyinstaller
-        shell: ${{ matrix.shell }}
       
       - name: Compiling Executable
         run: pyinstaller ${{ matrix.spec-file }}
-        shell: ${{ matrix.shell }}
 
       - name: Zipping Folder
         if: (matrix.spec-file == 'nott-your-timetable-folder.spec') && (matrix.os == 'windows-latest')
         run: |
           cd dist/
           zip -r nott-your-timetable.zip nott-your-timetable
-        shell: ${{ matrix.shell }}
 
       - name: Compressing and Archiving for MacOS
         if: matrix.os == 'macos-latest'
@@ -89,6 +85,7 @@ jobs:
           zip -r nott-your-timetable${{ matrix.extension }} nott-your-timetable.app
           
       - name: Uploading Executable
-        run: gh release upload ${{ inputs.version }} dist/nott-your-timetable${{ matrix.extension }}
+        run: gh release upload ${{ env.version }} dist/nott-your-timetable${{ matrix.extension }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
