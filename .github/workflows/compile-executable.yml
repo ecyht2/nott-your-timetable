@@ -116,7 +116,7 @@ jobs:
         # https://stackoverflow.com/questions/96882/how-do-i-create-a-nice-looking-dmg-for-mac-os-x-using-command-line-tools
         run: |
           cd dist/
-          create-dmg 'nott-your-timetable.app' --dmg-title='nott-your-timetable-${{ matrix.name }}'
+          create-dmg 'nott-your-timetable.app' --dmg-title='nott-your-timetable-${{ matrix.name }}' --identity='io.github.nott-your-timetable'
           
       - name: Uploading Executable
         run: gh release upload ${{ env.version }} dist/nott-your-timetable-${{ matrix.name }}.dmg
