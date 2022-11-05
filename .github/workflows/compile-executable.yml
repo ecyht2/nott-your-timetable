@@ -35,7 +35,6 @@ jobs:
 
     steps:
       - name: Installing msys2
-        if: matrix.os == 'windows-latest'
         uses: msys2/setup-msys2@v2
         with: 
           update: true
@@ -108,7 +107,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: latest
-          cache: npm
           
       - name: Installing create-dmg
         run: npm install --global create-dmg
