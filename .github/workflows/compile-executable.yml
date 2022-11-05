@@ -14,35 +14,24 @@ permissions:
   contents: write
   
 jobs:
-  compile-and-upload:
+  windows:
     strategy:
       matrix:
-        os: [windows-latest, macos-latest]
         spec-file: [nott-your-timetable.spec, nott-your-timetable-folder.spec]
         include:
-          - os: macos-latest
-            shell: bash
-            install-dependencies: brew install pygobject3 gtk4
-            extension: "-macos.zip"
-          - os: windows-latest
-            shell: msys2 {0}
-            install-dependencies: pacman -Syu --noconfirm mingw-w64-x86_64-gtk4 mingw-w64-x86_64-python3-gobject mingw-w64-x86_64-python3-pip
+          - spec-file: nott-your-timetable.spec
             extension: .exe
-          - os: windows-latest
-            spec-file: nott-your-timetable-folder.spec
+          - spec-file: nott-your-timetable-folder.spec
             extension: .zip
-          - os: macos-latest
-            spec-file: nott-your-timetable-folder.spec
-            extension: "-folder-macos.zip"
         
-    runs-on: ${{ matrix.os }}
+    runs-on: windows-latest
 
     env:
       version: ${{ inputs.version || github.event.release.tag_name }}
 
     defaults:
       run:
-        shell: ${{ matrix.shell }}
+        shell: msys2 {0}
 
     steps:
       - name: Installing msys2
@@ -53,20 +42,15 @@ jobs:
           msystem: mingw64
           install: >-
             zip
+            mingw-w64-x86_64-gtk4
+            mingw-w64-x86_64-python3-gobject
+            mingw-w64-x86_64-python3-pip
           
       - uses: actions/checkout@v3
-        with:
-          ref: ${{ env.version }}
-
-      - name: Set up Python "3.10"
-        uses: actions/setup-python@v4
-        with:
-         python-version: "3.10"
+        # with:
+        #  ref: ${{ env.version }}
          
-      - name: Installing System Dependencies
-        run: ${{ matrix.install-dependencies }}
-         
-      - name: Installing nott-your-timetable
+      - name: Installing nott-your-timetable and pyinstaller
         run: |
           python -m pip install -e .
           python -m pip install pyinstaller
@@ -75,21 +59,68 @@ jobs:
         run: pyinstaller ${{ matrix.spec-file }}
 
       - name: Zipping Folder
-        if: (matrix.spec-file == 'nott-your-timetable-folder.spec') && (matrix.os == 'windows-latest')
+        if: (matrix.spec-file == 'nott-your-timetable-folder.spec')
         run: |
           cd dist/
           zip -r nott-your-timetable.zip nott-your-timetable
-
-      - name: Compressing and Archiving for MacOS
-        if: matrix.os == 'macos-latest'
-        # https://stackoverflow.com/questions/286419/how-to-build-a-dmg-mac-os-x-file-on-a-non-mac-platform
-        # https://stackoverflow.com/questions/96882/how-do-i-create-a-nice-looking-dmg-for-mac-os-x-using-command-line-tools
-        run: |
-          cd dist/
-          zip -r nott-your-timetable${{ matrix.extension }} nott-your-timetable.app
           
       - name: Uploading Executable
         run: gh release upload ${{ env.version }} dist/nott-your-timetable${{ matrix.extension }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
+  
+  macos:
+    runs-on: macos-latest
+    
+    strategy:
+      matrix:
+        spec-file: [nott-your-timetable.spec, nott-your-timetable-folder.spec]
+        include:
+          - spec-file: nott-your-timetable-folder.spec
+            name: folder
+    
+    env:
+      version: ${{ inputs.version || github.event.release.tag_name }}
+    
+    steps:
+      - uses: actions/checkout@v3
+        # with:
+        #  ref: ${{ env.version }}
+          
+      - name: Installing System Dependencies
+        run: brew install pygobject3 gtk4
+        
+      - name: Set up Python "3.10"
+        uses: actions/setup-python@v4
+        with:
+         python-version: "3.10"
+         
+      - name: Installing nott-your-timetable and pyinstaller
+        run: |
+          python -m pip install -e .
+          python -m pip install pyinstaller
+        
+      - name: Compiling Executable
+        run: pyinstaller ${{ matrix.spec-file }}
+        
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: latest
+          cache: npm
+          
+      - name: Installing create-dmg
+        run: npm install --global create-dmg
+        
+      - name: Making dmg
+        # https://stackoverflow.com/questions/286419/how-to-build-a-dmg-mac-os-x-file-on-a-non-mac-platform
+        # https://stackoverflow.com/questions/96882/how-do-i-create-a-nice-looking-dmg-for-mac-os-x-using-command-line-tools
+        run: |
+          cd dist/
+          create-dmg 'nott-your-timetable.app' --dmg-title='nott-your-timetable-${{ matrix.name }}'
+          
+      - name: Uploading Executable
+        run: gh release upload ${{ env.version }} dist/nott-your-timetable-${{ matrix.name }}.dmg
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
