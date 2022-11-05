@@ -59,5 +59,5 @@ app = BUNDLE(
     exe,
     name='nott-your-timetable.app',
     icon=None,
-    bundle_identifier=None,
+    bundle_identifier='io.github.nott-your-timetable',
 )
