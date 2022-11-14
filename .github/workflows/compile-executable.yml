@@ -77,7 +77,7 @@ jobs:
         spec-file: [nott-your-timetable.spec, nott-your-timetable-folder.spec]
         include:
           - spec-file: nott-your-timetable-folder.spec
-            name: folder
+            name: -folder
     
     env:
       version: ${{ inputs.version || github.event.release.tag_name }}
@@ -103,20 +103,28 @@ jobs:
       - name: Compiling Executable
         run: pyinstaller ${{ matrix.spec-file }}
         
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: latest
+      # - name: Setup Node
+      #  uses: actions/setup-node@v3
+      #  with:
+      #    node-version: latest
           
-      - name: Installing create-dmg
-        run: npm install --global create-dmg
+      # - name: Installing create-dmg
+      #  run: npm install --global create-dmg
         
-      - name: Making dmg
+      - name: Zipping App Bundles
+        run: zip -r nott-your-timetable${{ matrix.name }}.zip nott-your-timetable.app
+        
+      # - name: Making dmg
         # https://stackoverflow.com/questions/286419/how-to-build-a-dmg-mac-os-x-file-on-a-non-mac-platform
         # https://stackoverflow.com/questions/96882/how-do-i-create-a-nice-looking-dmg-for-mac-os-x-using-command-line-tools
-        run: |
-          cd dist/
-          create-dmg 'nott-your-timetable.app' --dmg-title='nott-your-timetable-${{ matrix.name }}' --identity='io.github.nott-your-timetable'
+        # Code Signing
+        # https://developer.apple.com/library/archive/documentation/Security/Conceptual/CodeSigningGuide/Procedures/Procedures.html
+        # https://github.com/pyinstaller/pyinstaller/wiki/Recipe-OSX-Code-Signing
+        # https://developer.apple.com/library/archive/technotes/tn2206/_index.html
+        # https://stackoverflow.com/questions/66693435/step-by-step-recipe-for-signing-mac-installers-dmg
+      #  run: |
+      #    cd dist/
+      #    create-dmg 'nott-your-timetable.app' --dmg-title='nott-your-timetable-${{ matrix.name }}' --identity='io.github.nott-your-timetable'
           
       - name: Uploading Executable
         run: gh release upload ${{ env.version }} dist/nott-your-timetable-${{ matrix.name }}.dmg
