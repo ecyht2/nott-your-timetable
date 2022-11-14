@@ -112,7 +112,9 @@ jobs:
       #  run: npm install --global create-dmg
         
       - name: Zipping App Bundles
-        run: zip -r nott-your-timetable${{ matrix.name }}.zip nott-your-timetable.app
+        run: |
+          cd dist/
+          zip -r nott-your-timetable${{ matrix.name }}.zip nott-your-timetable.app
         
       # - name: Making dmg
         # https://stackoverflow.com/questions/286419/how-to-build-a-dmg-mac-os-x-file-on-a-non-mac-platform
@@ -127,6 +129,6 @@ jobs:
       #    create-dmg 'nott-your-timetable.app' --dmg-title='nott-your-timetable-${{ matrix.name }}' --identity='io.github.nott-your-timetable'
           
       - name: Uploading Executable
-        run: gh release upload ${{ env.version }} dist/nott-your-timetable-${{ matrix.name }}.dmg
+        run: gh release upload ${{ env.version }} dist/nott-your-timetable-${{ matrix.name }}.zip
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
