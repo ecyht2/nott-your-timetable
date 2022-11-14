@@ -70,9 +70,13 @@ nott-your-timetable -h
   * [ ] Add Export Options
   * [x] Add better help descriptions
   * [ ] Support for mutiple program selection
-  * [x] Add binaries
-    * [x] EXE (Windows)
+  * [ ] Add binaries
+    * [ ] EXE (Windows)
+      * [x] EXE
+      * [ ] Installer
     * [ ] Application (MacOS)
+      * [x] App Bundle
+      * [ ] DMG
     * [ ] Appimage (Linux)
     * [ ] PKGBUILD (AUR/Arch)
     * [ ] DEB (Debian)
