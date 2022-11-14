@@ -129,6 +129,6 @@ jobs:
       #    create-dmg 'nott-your-timetable.app' --dmg-title='nott-your-timetable-${{ matrix.name }}' --identity='io.github.nott-your-timetable'
           
       - name: Uploading Executable
-        run: gh release upload ${{ env.version }} dist/nott-your-timetable-${{ matrix.name }}.zip
+        run: gh release upload ${{ env.version }} dist/nott-your-timetable${{ matrix.name }}.zip
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
