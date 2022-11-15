@@ -114,7 +114,7 @@ jobs:
       - name: Zipping App Bundles
         run: |
           cd dist/
-          zip -r nott-your-timetable${{ matrix.name }}.zip nott-your-timetable.app
+          zip -r nott-your-timetable-macos${{ matrix.name }}.zip nott-your-timetable.app
         
       # - name: Making dmg
         # https://stackoverflow.com/questions/286419/how-to-build-a-dmg-mac-os-x-file-on-a-non-mac-platform
