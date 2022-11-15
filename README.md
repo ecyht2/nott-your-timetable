@@ -1,14 +1,105 @@
 # Nott Your Timetable
 Exports Timetable for University of Nottingham Malaysia Student.
 
-# Installation
-## Requirements
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
+**Table of Contents**
+
+- [Nott Your Timetable](#nott-your-timetable)
+    - [Installation](#installation)
+        - [Windows Folder (Recommended)](#windows-folder-recommended)
+        - [Windows Single EXE](#windows-single-exe)
+        - [MacOS](#macos)
+        - [Installing via Pip](#installing-via-pip)
+            - [Requirements](#requirements)
+            - [Installation](#installation-1)
+    - [Usage](#usage)
+        - [GUI](#gui)
+        - [Importing Timetable](#importing-timetable)
+            - [Outlook](#outlook)
+            - [Google Calendar](#google-calendar)
+        - [CLI](#cli)
+    - [TODO](#todo)
+
+<!-- markdown-toc end -->
+
+## Installation
+
+### Windows Folder (Recommended)
+
+1. Download the latest version of nott-your-timetable.zip [here](https://github.com/ecyht2/nott-your-timetable/releases/latest "Download Link").
+2. Extract the .zip file.
+3. Run the .exe file inside the extracted folder.
+
+### Windows Single EXE
+
+**Note:** Both folder and single exe file has the same features. However, the single exe file might take a longer time to start.
+
+1. Download the latest version of nott-your-timetable.exe [here](https://github.com/ecyht2/nott-your-timetable/releases/latest "Download Link").
+2. Run the .exe file.
+
+### MacOS
+
+**Note:** Both versions have the same features, but the first one might take a longer time to start.
+
+1. Download the latest version of nott-your-timetable-macos.zip or nott-your-timetable-macos-folder.zip (recommended) [here](https://github.com/ecyht2/nott-your-timetable/releases/latest "Download Link").
+2. Extract the .zip file.
+3. Move the extracted .app file into `Applications` folder (optional).
+4. Run the .app file.
+
+### Installing via Pip
+
+#### Requirements
+
 `python>=3.10` Latest version of Python can be downloaded [here](https://www.python.org/downloads/) for more information
 
-## Installing via Pip
+#### Installation
+
 ``` sh
 pip install nott-your-timetable
 ```
+
+For GUI support:
+
+**Note:** there might be some error isntalling PyGObject using pip, follow the instruction [here](https://pygobject.readthedocs.io/en/latest/getting_started.html "PyGObject download") to download gtk. When following the instructions replace all refrences to **gtk3** with **gtk4** as nott-your-timetable uses **gtk4** and not **gtk3** e.g. `mingw-w64-x86_64-gtk3` -> `mingw-w64-x86_64-gtk4`.
+
+``` sh
+pip install nott-your-timetable[gui]
+```
+
+## Usage
+
+### GUI
+1. Select School/Division
+![School/Division Selection](./media/school.jpg)
+2. Select Program
+![Program Selection](./media/program.jpg)
+3. Select week period
+![Weeks Selection](./media/weeks.jpg)
+4. Select day period
+![Days Selection](./media/days.jpg)
+5. Select export file format and hit continue. If you are confused just choose **ics**.
+![Export Format Selection](./media/format.jpg)
+6. Select location to save.
+![Save Location Selection](./media/save.jpg)
+
+### Importing Timetable
+
+#### Outlook
+
+1. Open Outlook and go to the calendar section.
+![Outlook Calendar](./media/outlook.jpg)
+2. Click on add calendar.
+![Adding Calendar](./media/add-calendar.jpg)
+3. Click on upload from file.
+![Upload from file](./media/upload.jpg)
+4. Select file and calendar to import to.
+![Uploading Calendar](./media/select.jpg)
+5. Done :)
+![Imported Calendar](./media/done.jpg)
+
+#### Google Calendar
+
+TODO
 
 ### CLI
 A simple usage to export the entire year to a ics file by default.
@@ -57,7 +148,7 @@ nott-your-timetable-cli -h
 ```
 
 
-# TODO
+## TODO
   * [ ] Support for exporting to other formats
     * [x] CSV
     * [x] iCalander
