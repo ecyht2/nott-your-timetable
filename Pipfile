@@ -6,10 +6,12 @@ name = "pypi"
 [packages]
 requests = "*"
 icalendar = "*"
-PyGObject = "*"
 
 [dev-packages]
 pytest = "*"
 
 [requires]
 python_version = "3.10"
+
+[gui]
+pygobject = "*"

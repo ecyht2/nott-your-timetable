@@ -7,7 +7,23 @@ from .utils.range_handlers import handle_ranges_days, handle_ranges
 from .utils.weeks import find_current_week_nott
 from .utils.parsers import get_program_value, make_request
 from .cli import get_school_interactive, parse_arguments
-from .gui import NottApp
+
+flag = False
+try:
+    from .gui import NottApp
+    flag = True
+except ModuleNotFoundError:
+    pass
+
+
+def main():
+    if flag:
+        return main_gui()
+    else:
+        print("PyGObject not installed, deafulting to CLI.", file=sys.stderr)
+        print("Please install the gi module or install the gui extras.",
+              file=sys.stderr)
+        return main_cli()
 
 
 def main_cli():
