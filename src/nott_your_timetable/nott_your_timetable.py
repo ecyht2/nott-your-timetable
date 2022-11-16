@@ -8,22 +8,27 @@ from .utils.weeks import find_current_week_nott
 from .utils.parsers import get_program_value, make_request
 from .cli import get_school_interactive, parse_arguments
 
-flag = False
+GUI_FLAG = False
 try:
     from .gui import NottApp
-    flag = True
+    GUI_FLAG = True
 except ModuleNotFoundError:
     pass
 
 
 def main():
-    if flag:
+    """Main Function to interface with nott-your-timetable.
+
+    If GUI dependencies are installed, it will launch the GUI. Otherwise, it
+    will default to CLI.
+    """
+    if GUI_FLAG:
         return main_gui()
-    else:
-        print("PyGObject not installed, deafulting to CLI.", file=sys.stderr)
-        print("Please install the gi module or install the gui extras.",
-              file=sys.stderr)
-        return main_cli()
+
+    print("PyGObject not installed, deafulting to CLI.", file=sys.stderr)
+    print("Please install the gi module or install the gui extras.",
+          file=sys.stderr)
+    return main_cli()
 
 
 def main_cli():
