@@ -24,7 +24,7 @@ authors = [
 gui = ["PyGObject"]
 
 [project.gui-scripts]
-"nott-your-timetable" = "nott_your_timetable.nott_your_timetable:main_gui"
+"nott-your-timetable" = "nott_your_timetable.nott_your_timetable:main"
 
 [project.urls]
 "Homepage" = "https://github.com/ecyht2/nott-your-timetable"
