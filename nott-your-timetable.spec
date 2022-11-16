@@ -8,7 +8,8 @@ a = Analysis(
     ['nott-your-timetable'],
     pathex=[],
     binaries=[],
-    datas=[('src/nott_your_timetable/data/', 'nott_your_timetable/data')],
+    datas=[('src/nott_your_timetable/data/', 'nott_your_timetable/data'),
+           ('README.md', '.')],
     hiddenimports=[],
     hookspath=[],
     # https://github.com/pyinstaller/pyinstaller/pull/6834
