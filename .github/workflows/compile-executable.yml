@@ -46,8 +46,8 @@ jobs:
             mingw-w64-x86_64-python3-pip
           
       - uses: actions/checkout@v3
-        # with:
-        #  ref: ${{ env.version }}
+        with:
+          ref: ${{ env.version }}
          
       - name: Installing nott-your-timetable and pyinstaller
         run: |
@@ -84,8 +84,8 @@ jobs:
     
     steps:
       - uses: actions/checkout@v3
-        # with:
-        #  ref: ${{ env.version }}
+        with:
+          ref: ${{ env.version }}
           
       - name: Installing System Dependencies
         run: brew install pygobject3 gtk4
