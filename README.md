@@ -70,32 +70,32 @@ pip install nott-your-timetable[gui]
 
 ### GUI
 1. Select School/Division
-![School/Division Selection](./media/school.jpg)
+![School/Division Selection](https://raw.githubusercontent.com/ecyht2/nott-your-timetable/master/media/school.jpg)
 2. Select Program
-![Program Selection](./media/program.jpg)
+![Program Selection](https://raw.githubusercontent.com/ecyht2/nott-your-timetable/master/media/program.jpg)
 3. Select week period
-![Weeks Selection](./media/weeks.jpg)
+![Weeks Selection](https://raw.githubusercontent.com/ecyht2/nott-your-timetable/master/media/weeks.jpg)
 4. Select day period
-![Days Selection](./media/days.jpg)
+![Days Selection](https://raw.githubusercontent.com/ecyht2/nott-your-timetable/master/media/days.jpg)
 5. Select export file format and hit continue. If you are confused just choose **ics**.
-![Export Format Selection](./media/format.jpg)
+![Export Format Selection](https://raw.githubusercontent.com/ecyht2/nott-your-timetable/master/media/format.jpg)
 6. Select location to save.
-![Save Location Selection](./media/save.jpg)
+![Save Location Selection](https://raw.githubusercontent.com/ecyht2/nott-your-timetable/master/media/save.jpg)
 
 ### Importing Timetable
 
 #### Outlook
 
 1. Open Outlook and go to the calendar section.
-![Outlook Calendar](./media/outlook.jpg)
+![Outlook Calendar](https://raw.githubusercontent.com/ecyht2/nott-your-timetable/master/media/outlook.jpg)
 2. Click on add calendar.
-![Adding Calendar](./media/add-calendar.jpg)
+![Adding Calendar](https://raw.githubusercontent.com/ecyht2/nott-your-timetable/master/media/add-calendar.jpg)
 3. Click on upload from file.
-![Upload from file](./media/upload.jpg)
+![Upload from file](https://raw.githubusercontent.com/ecyht2/nott-your-timetable/master/media/upload.jpg)
 4. Select file and calendar to import to.
-![Uploading Calendar](./media/select.jpg)
+![Uploading Calendar](https://raw.githubusercontent.com/ecyht2/nott-your-timetable/master/media/select.jpg)
 5. Done :)
-![Imported Calendar](./media/done.jpg)
+![Imported Calendar](https://raw.githubusercontent.com/ecyht2/nott-your-timetable/master/media/done.jpg)
 
 #### Google Calendar
 
