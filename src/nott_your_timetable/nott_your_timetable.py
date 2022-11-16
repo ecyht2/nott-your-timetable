@@ -17,6 +17,11 @@ except ModuleNotFoundError:
 
 
 def main():
+    """Main Function to interface with nott-your-timetable.
+
+    If GUI dependencies are installed, it will launch the GUI. Otherwise, it
+    will default to CLI.
+    """
     if GUI_FLAG:
         return main_gui()
 
