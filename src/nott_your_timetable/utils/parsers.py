@@ -571,7 +571,7 @@ def make_request(program_value: str, days: list[int],
     ScheduleData
         The data fetch
     """
-    link = f"http://timetablingunmc.nottingham.ac.uk:8016/reporting/\
+    link = f"http://timetablingunmc.nottingham.ac.uk:8006/reporting/\
 TextSpreadsheet;programme+of+study;id;{program_value}%0D%0A?\
 days=1-7&weeks=1-52&periods=3-20&template=SWSCUST+programme+of+study+TextSpreadsheet&\
 height=100&week=100"
